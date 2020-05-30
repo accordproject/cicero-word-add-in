@@ -1,20 +1,15 @@
 {
-  "plugins": [
-    "react",
-    "office-addins"
-  ],
+  "parser": "babel-eslint",
   "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module",
     "ecmaFeatures": {
+      "sourceType": "module",
+      "ecmaVersion": 2018,
       "jsx": true
     }
   },
-  "extends": [
-    "plugin:office-addins/react"
-  ],
   "rules": {
-    "react/prop-types": 0
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"]
   },
   "settings": {
     "react": {

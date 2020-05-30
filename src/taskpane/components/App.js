@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 export default class App extends React.Component {
   click = async () => {
@@ -8,10 +8,10 @@ export default class App extends React.Component {
        */
 
       // insert a paragraph at the end of the document.
-      const paragraph = context.document.body.insertParagraph("Hello World", Word.InsertLocation.end);
+      const paragraph = context.document.body.insertParagraph('Hello World', Word.InsertLocation.end);
 
       // change the paragraph color to blue.
-      paragraph.font.color = "green";
+      paragraph.font.color = 'green';
 
       await context.sync();
     });
