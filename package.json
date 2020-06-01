@@ -26,7 +26,6 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "es6-promise": "^4.2.8",
     "react": "^16.8.2",
     "react-dom": "^16.10.2",
     "semantic-ui-react": "^0.88.2"
