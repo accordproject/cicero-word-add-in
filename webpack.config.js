@@ -18,8 +18,7 @@ module.exports = async (env, options)  => {
     taskpane: [
       'react-hot-loader/patch',
       './src/taskpane/index.js',
-    ],
-    commands: './src/commands/commands.js'
+    ]
     },
     resolve: {
       extensions: [".html", ".js"]
@@ -62,11 +61,6 @@ module.exports = async (env, options)  => {
         filename: "taskpane.html",
           template: './src/taskpane/taskpane.html',
           chunks: ['taskpane', 'vendor', 'polyfill']
-      }),
-      new HtmlWebpackPlugin({
-          filename: "commands.html",
-          template: "./src/commands/commands.html",
-          chunks: ["commands"]
       }),
       new CopyWebpackPlugin([
           {
