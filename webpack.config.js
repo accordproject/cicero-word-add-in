@@ -10,15 +10,8 @@ module.exports = async (env, options)  => {
   const config = {
     devtool: "source-map",
     entry: {
-    vendor: [
-        'react',
-        'react-dom',
-    ],
-    polyfill: 'babel-polyfill',
-    taskpane: [
-      'react-hot-loader/patch',
-      './src/taskpane/index.js',
-    ]
+      polyfill: 'babel-polyfill',
+      main: './src/index.js'
     },
     resolve: {
       extensions: [".html", ".js"]
@@ -50,24 +43,21 @@ module.exports = async (env, options)  => {
     },    
     plugins: [
       new CleanWebpackPlugin(),
-      new CopyWebpackPlugin([
-        {
-          to: "taskpane.css",
-          from: "./src/taskpane/taskpane.css"
-        }
-      ]),
+      new CopyWebpackPlugin({
+        patterns: [
+          { to: "index.css", from: "./src/index.css" }
+        ]
+      }),
       new ExtractTextPlugin('[name].[hash].css'),
       new HtmlWebpackPlugin({
-        filename: "taskpane.html",
-          template: './src/taskpane/taskpane.html',
-          chunks: ['taskpane', 'vendor', 'polyfill']
+        filename: "index.html",
+        template: './src/index.html',
       }),
-      new CopyWebpackPlugin([
-          {
-              from: './assets',
-              to: 'assets',
-          }
-      ])
+      new CopyWebpackPlugin({
+        patterns: [
+          { to: "./assets", from: "assets" }
+        ]
+      }),
     ],
     devServer: {
       headers: {
