@@ -67,10 +67,7 @@ module.exports = async (env, options)  => {
               from: './assets',
               to: 'assets',
           }
-      ]),
-      new webpack.ProvidePlugin({
-        Promise: ["es6-promise", "Promise"]
-      })
+      ])
     ],
     devServer: {
       headers: {
