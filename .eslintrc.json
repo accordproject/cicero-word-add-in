@@ -9,7 +9,10 @@
   },
   "rules": {
     "comma-dangle": ["error", "always-multiline"],
+    "indent": ["error", 2],
     "object-curly-spacing": ["error", "always"],
+    "no-multi-spaces": "error",
+    "no-trailing-spaces": "error",
     "quotes": ["error", "single"],
     "semi": ["error", "always"]
   },
