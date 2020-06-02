@@ -5,7 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
-module.exports = async (env, options)  => {
+module.exports = async (env, options) => {
   const dev = options.mode === 'development';
   const config = {
     devtool: 'source-map',
@@ -21,8 +21,8 @@ module.exports = async (env, options)  => {
         {
           test: /\.jsx?$/,
           use: [
-              'react-hot-loader/webpack',
-              'babel-loader',
+            'react-hot-loader/webpack',
+            'babel-loader',
           ],
           exclude: /node_modules/,
         },
@@ -33,14 +33,14 @@ module.exports = async (env, options)  => {
         {
           test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
           use: {
-              loader: 'file-loader',
-              query: {
-                  name: 'assets/[name].[ext]',
-                },
-              },  
-            },   
-          ],
-    },    
+            loader: 'file-loader',
+            query: {
+              name: 'assets/[name].[ext]',
+            },
+          },
+        },
+      ],
+    },
     plugins: [
       new CleanWebpackPlugin(),
       new CopyWebpackPlugin({
@@ -62,7 +62,7 @@ module.exports = async (env, options)  => {
     devServer: {
       headers: {
         'Access-Control-Allow-Origin': '*',
-      },      
+      },
       https: (options.https !== undefined) ? options.https : await devCerts.getHttpsServerOptions(),
       port: process.env.npm_package_config_dev_server_port || 3000,
     },
