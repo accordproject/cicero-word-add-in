@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/accordproject/cicero-word-add-in.git"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "config": {
     "app-to-debug": "word",
     "app-type-to-debug": "desktop",
