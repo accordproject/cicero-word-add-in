@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   Library as TemplateLibraryComponent,
@@ -29,11 +29,7 @@ const LibraryComponent = (props) => {
   return (
     <TemplateLibraryComponent
       templates = {templates}
-      upload = {mockUpload}
-      import = {mockImport}
-      addTemp = {mockNewTemplate}
       addToCont = { (templateUri) => addToContract(templateIndex, templateUri)}
-      libraryProps = {libraryProps}
     />
   );
 };
