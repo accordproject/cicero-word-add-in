@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu } from 'semantic-ui-react';
 
+import TemplateLibrary from './TemplateLibrary';
 import './App.css';
 
 const App = ({ isOfficeInitialized }) => {
@@ -26,7 +27,7 @@ const App = ({ isOfficeInitialized }) => {
 
   const navItems = [
     { name: 'document', content: 'Document', component: <p>Document component goes here.</p> },
-    { name: 'library', content: 'Library', component: <p>Library component goes here.</p> },
+    { name: 'library', content: 'Library', component: <TemplateLibrary /> },
   ];
 
   if (!isOfficeInitialized) {
