@@ -5,12 +5,10 @@ import * as ReactDOM from 'react-dom';
 
 let isOfficeInitialized = false;
 
-const title = 'Accord Project';
-
 const render = Component => {
   ReactDOM.render(
     <AppContainer>
-      <Component title={title} isOfficeInitialized={isOfficeInitialized} />
+      <Component isOfficeInitialized={isOfficeInitialized} />
     </AppContainer>,
     document.getElementById('container')
   );

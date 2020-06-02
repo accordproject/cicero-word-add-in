@@ -1,35 +1,42 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { Menu } from 'semantic-ui-react';
 
-export default class App extends React.Component {
-  click = async () => {
-    return Word.run(async context => {
-      /**
-       * Insert your Word code here
-       */
+const App = ({ isOfficeInitialized }) => {
+  const [activeNav, setActiveNav] = useState('library');
 
-      // insert a paragraph at the end of the document.
-      const paragraph = context.document.body.insertParagraph('Hello World', Word.InsertLocation.end);
-
-      // change the paragraph color to blue.
-      paragraph.font.color = 'green';
-
-      await context.sync();
-    });
+  const handleClick = (event, { name }) => {
+    setActiveNav(name);
   };
 
-  render() {
-    const { title, isOfficeInitialized } = this.props;
+  const navItems = [
+    { name: 'document', content: 'Document', component: <p>Document component goes here.</p> },
+    { name: 'library', content: 'Library', component: <p>Library component goes here.</p> },
+  ];
 
-    if (!isOfficeInitialized) {
-      return (
-        <p>{title}: Please sideload me!</p>
-      );
-    }
-
+  if (!isOfficeInitialized) {
     return (
-      <div>
-          <button onClick={this.click}>Try clicking me!</button>
-      </div>
+      <p>Please sideload the extension.</p>
     );
   }
-}
+
+  return (
+    <div>
+      <Menu widths={navItems.length}>
+        {navItems.map((item, index) => (
+          <Menu.Item
+            active={activeNav === item.name}
+            key={index}
+            name={item.name}
+            onClick={handleClick}
+            content={item.content}
+          />
+        ))}
+      </Menu>
+      {navItems.map((item, index) => (
+        item.name === activeNav && item.component
+      ))}
+    </div>
+  );
+};
+
+export default App;
