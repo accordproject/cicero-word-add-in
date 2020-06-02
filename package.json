@@ -30,7 +30,11 @@
     "@accordproject/cicero-ui": "^0.92.2",
     "react": "^16.8.2",
     "react-dom": "^16.10.2",
-    "semantic-ui-react": "^0.88.2"
+    "semantic-ui-react": "^0.88.2",
+    "slate": "^0.58.1",
+    "slate-history": "^0.58.1",
+    "slate-react": "^0.58.2",
+    "styled-components": "^5.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",

@@ -58,7 +58,7 @@ module.exports = async (env, options) => {
           { to: './assets', from: 'assets' },
         ],
       }),
-      new webpack.IgnorePlugin(/(slate|slate-react|styled-components|slate-history|child_process)/),
+      new webpack.IgnorePlugin(/child_process/),
     ],
     // Although webpack can load the below mentioned modules but the browser is unable to understand
     // these Node methods. They can only be run in a Node environment. Hence they are marked as "empty"
