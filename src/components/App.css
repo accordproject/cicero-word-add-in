@@ -1,0 +1,14 @@
+.startup-container {
+    position: absolute;
+    bottom: 0;
+    margin: 1em;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox > span {
+    margin-right: 1em;
+}

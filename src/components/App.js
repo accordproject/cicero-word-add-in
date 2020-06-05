@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu } from 'semantic-ui-react';
+
+import './App.css';
 
 const App = ({ isOfficeInitialized }) => {
   const [activeNav, setActiveNav] = useState('library');
+  const [openOnStartup, setOpenOnStartup] = useState(false);
+
+  useEffect(() => {
+    if (isOfficeInitialized) {
+      const autoOpenSetting = Office.context.document.settings.get('Office.AutoShowTaskpaneWithDocument');
+      setOpenOnStartup(autoOpenSetting);
+    }
+  }, [isOfficeInitialized]);
 
   const handleClick = (event, { name }) => {
     setActiveNav(name);
+  };
+
+  const handleStartupState = (event) => {
+    Office.context.document.settings.set('Office.AutoShowTaskpaneWithDocument', event.target.checked);
+    setOpenOnStartup(event.target.checked);
+    Office.context.document.settings.saveAsync();
   };
 
   const navItems = [
@@ -35,6 +51,12 @@ const App = ({ isOfficeInitialized }) => {
       {navItems.map((item, index) => (
         item.name === activeNav && item.component
       ))}
+      <footer className="startup-container">
+        <label className="checkbox">
+          <span>Auto open on startup:</span>
+          <input type="checkbox" checked={openOnStartup} onChange={handleStartupState}></input>
+        </label>
+      </footer>
     </div>
   );
 };
