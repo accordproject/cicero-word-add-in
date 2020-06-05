@@ -1,32 +1,67 @@
-# Office-Addin-TaskPane-React-JS
+# Cicero Word Add-in
 
-This repository contains the source code used by the [Yo Office generator](https://github.com/OfficeDev/generator-office) when you create a new Office Add-in that appears in the task pane. You can also use this repository as a sample to base your own project from if you choose not to use the generator. 
+Microsoft Word Add-in for editing texts of Smart Legal Contracts.
 
-## JavaScript
+## For Developers
 
-This template is written using JavaScript. For the [TypeScript](http://www.typescriptlang.org/) version of this template, go to [Office-Addin-TaskPane-React](https://github.com/OfficeDev/Office-Addin-TaskPane-React).
+The following instructions will help you set up the project on your development
+environment.
 
-## Debugging
+#### Prerequisites
 
-This template supports debugging using any of the following techniques:
+1. Operating System: Windows or MacOSX
+2. MS Word (preferably desktop version)
+3. Node JS (preferably v12 as it is the latest LTS)
 
-- [Use a browser's developer tools](https://docs.microsoft.com/office/dev/add-ins/testing/debug-add-ins-in-office-online)
-- [Attach a debugger from the task pane](https://docs.microsoft.com/office/dev/add-ins/testing/attach-debugger-from-task-pane)
-- [Use F12 developer tools on Windows 10](https://docs.microsoft.com/office/dev/add-ins/testing/debug-add-ins-using-f12-developer-tools-on-windows-10)
+#### Setup Instructions
 
-## Questions and comments
+1. Clone the project using HTTPS or SSH.
+    ```bash
+    $ git clone https://github.com/accordproject/cicero-word-add-in.git
+    ```
 
-We'd love to get your feedback about this sample. You can send your feedback to us in the *Issues* section of this repository.
+2. Install dependencies of the project.
+    ```bash
+    npm i
+    ```
 
-Questions about Microsoft Office 365 development in general should be posted to [Stack Overflow](http://stackoverflow.com/questions/tagged/office-js+API).  If your question is about the Office JavaScript APIs, make sure it's tagged with  [office-js].
+3. Firing up the server diverge a little depending upon the OS you're using.
+    1. **On Windows:** Run `npm start` and it will start the server and
+       automatically sideload the the add-in on the desktop version of MS Word.
+    2. **On MacOSX:** Run `npm run dev-server` for starting the server and run
+     `npm start` to sideload the add-in.
 
-## Additional resources
+4. To test your add-in on the web, run `npm run start:web` and this will start
+   the server. You can then sideload the add-in on the web version of MS Word
+   by following the steps given [here](https://docs.microsoft.com/en-us/office/dev/add-ins/testing/sideload-office-add-ins-for-testing#sideload-an-office-add-in-in-office-on-the-web).
 
-* [Office add-in documentation](https://docs.microsoft.com/office/dev/add-ins/overview/office-add-ins)
-* More Office Add-in samples at [OfficeDev on Github](https://github.com/officedev)
+5. Once the add-in is successfully loaded, the icon for add-in will be displayed
+   on the **Home** tab. Go there and click the button with name
+   "Cicero Word Add-in".
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+6. For more information on setting up Word add-in for development, follow this
+   [documentation](https://docs.microsoft.com/en-us/office/dev/add-ins/quickstarts/word-quickstart).
 
-## Copyright
+## Contributing
 
-Copyright (c) 2019 Microsoft Corporation. All rights reserved.
+The Accord Project technology is being developed as open source. All the
+software packages are being actively maintained on GitHub and we encourage
+organizations and individuals to contribute requirements, documentation,
+issues, new templates, and code.
+
+Find out what’s coming on our [blog](https://medium.com/@accordhq).
+
+Join the Accord Project Technology Working Group [Slack channel](https://accord-project-slack-signup.herokuapp.com/) to get involved!
+
+For code contributions, read our [contribution guidelines](https://github.com/accordproject/techdocs/blob/master/CONTRIBUTING.md).
+
+ESLint has been integrated with this project to stay consistent with the code
+practices we follow. Run `npm run lint` to check errors or `npm run lint:fix` to
+fix those errors which ESLint is capable to fix.
+
+## License
+
+Accord Project source code files are made available under the [Apache License, Version 2.0](/LICENSE).
+Accord Project documentation files are made available under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/) (CC-BY-4.0).
+
+Copyright 2018-2019 Clause, Inc. All trademarks are the property of their respective owners. See [LF Projects Trademark Policy](https://lfprojects.org/policies/trademark-policy/).
