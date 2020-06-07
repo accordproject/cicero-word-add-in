@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Menu } from 'semantic-ui-react';
 
 import TemplateLibrary from './TemplateLibrary';
@@ -49,7 +50,7 @@ const App = ({ isOfficeInitialized }) => {
           />
         ))}
       </Menu>
-      {navItems.map((item, index) => (
+      {navItems.map(item => (
         item.name === activeNav && item.component
       ))}
       <footer className="startup-container">
@@ -60,6 +61,10 @@ const App = ({ isOfficeInitialized }) => {
       </footer>
     </div>
   );
+};
+
+App.propTypes = {
+  isOfficeInitialized: PropTypes.bool,
 };
 
 export default App;

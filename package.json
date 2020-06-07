@@ -28,6 +28,7 @@
   "dependencies": {
     "@accordproject/cicero-core": "^0.20.10",
     "@accordproject/cicero-ui": "^0.92.2",
+    "prop-types": "^15.7.2",
     "react": "^16.8.2",
     "react-dom": "^16.10.2",
     "semantic-ui-react": "^0.88.2",
