@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Loader } from 'semantic-ui-react';
 
-import { Library as TemplateLibraryRenderer } from '@accordproject/cicero-ui';
+import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
 import { TemplateLibrary } from '@accordproject/cicero-core';
 
 const LibraryComponent = () => {
