@@ -1,7 +1,12 @@
+.menu-body {
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
 .startup-container {
-    position: absolute;
-    bottom: 0;
-    margin: 1em;
+    padding: 1em;
+    background-color: #ffffff;
 }
 
 .checkbox {

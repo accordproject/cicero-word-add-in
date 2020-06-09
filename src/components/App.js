@@ -20,7 +20,7 @@ const App = ({ isOfficeInitialized }) => {
     setActiveNav(name);
   };
 
-  const handleStartupState = (event) => {
+  const handleStartupState = event => {
     Office.context.document.settings.set('Office.AutoShowTaskpaneWithDocument', event.target.checked);
     setOpenOnStartup(event.target.checked);
     Office.context.document.settings.saveAsync();
@@ -38,7 +38,7 @@ const App = ({ isOfficeInitialized }) => {
   }
 
   return (
-    <div>
+    <React.Fragment>
       <Menu widths={navItems.length}>
         {navItems.map((item, index) => (
           <Menu.Item
@@ -50,16 +50,18 @@ const App = ({ isOfficeInitialized }) => {
           />
         ))}
       </Menu>
-      {navItems.map(item => (
-        item.name === activeNav && item.component
-      ))}
+      <div className="menu-body">
+        {navItems.map(item => (
+          item.name === activeNav && item.component
+        ))}
+      </div>
       <footer className="startup-container">
         <label className="checkbox">
           <span>Auto open on startup:</span>
           <input type="checkbox" checked={openOnStartup} onChange={handleStartupState}></input>
         </label>
       </footer>
-    </div>
+    </React.Fragment>
   );
 };
 
