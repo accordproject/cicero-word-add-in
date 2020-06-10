@@ -19,6 +19,12 @@ const LibraryComponent = () => {
     load();
   }, []);
 
+  const goToTemplateDetail = template => {
+    const templateOrigin = new URL(template.url).origin;
+    const { name, version } = template;
+    window.open(`${templateOrigin}/${name}@${version}.html`, '_blank');
+  };
+
   if(!templates){
     return <Loader active>Loading</Loader>;
   }
@@ -28,7 +34,7 @@ const LibraryComponent = () => {
       items = {templates}
       // TODO
       onPrimaryButtonClick={() => console.log('Action to add this template to contract')}
-      onSecondaryButtonClick={() => console.log('Action to view the details')}
+      onSecondaryButtonClick={template => goToTemplateDetail(template)}
     />
   );
 };
