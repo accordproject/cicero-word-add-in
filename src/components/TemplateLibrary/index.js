@@ -4,9 +4,11 @@ import { Loader } from 'semantic-ui-react';
 import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
 import { TemplateLibrary } from '@accordproject/cicero-core';
 
-const LibraryComponent = () => {
 
+const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
+  const [worker, setWorker] = useState(null);
+
   useEffect(() => {
     async function load() {
       const templateLibrary = new TemplateLibrary();
@@ -17,7 +19,27 @@ const LibraryComponent = () => {
       setTemplates(Object.values(templateIndex));
     }
     load();
+
+    if (window.Worker) {
+      setWorker(new Worker('../../../utils/worker.js', { type: 'module' }));
+    }
   }, []);
+
+  useEffect(() => {
+    // Receive template from worker
+    if (worker) {
+      worker.onmessage = event => {
+        console.log(event.data);
+      };
+    }
+  }, [worker]);
+
+  const loadTemplateText = async url => {
+    // Checks if there is an instance of `Worker` and posts message (URL of the template) to it.
+    if (worker) {
+      worker.postMessage({ url });
+    }
+  };
 
   const goToTemplateDetail = template => {
     const templateOrigin = new URL(template.url).origin;
@@ -32,8 +54,7 @@ const LibraryComponent = () => {
   return (
     <TemplateLibraryRenderer
       items = {templates}
-      // TODO
-      onPrimaryButtonClick={() => console.log('Action to add this template to contract')}
+      onPrimaryButtonClick={template => loadTemplateText(template.url)}
       onSecondaryButtonClick={template => goToTemplateDetail(template)}
     />
   );
