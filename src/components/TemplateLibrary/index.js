@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Loader } from 'semantic-ui-react';
 
 import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
-import { TemplateLibrary } from '@accordproject/cicero-core';
-
+import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 
 const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
-  const [worker, setWorker] = useState(null);
 
   useEffect(() => {
     async function load() {
@@ -19,26 +17,50 @@ const LibraryComponent = () => {
       setTemplates(Object.values(templateIndex));
     }
     load();
-
-    if (window.Worker) {
-      setWorker(new Worker('../../../utils/worker.js', { type: 'module' }));
-    }
   }, []);
 
-  useEffect(() => {
-    // Receive template from worker
-    if (worker) {
-      worker.onmessage = event => {
-        console.log(event.data);
-      };
-    }
-  }, [worker]);
+  const setup = async (text, data) => {
+    await Word.run(async context => {
+      // Gets the body of the document
+      const body = context.document.body;
+      // Inserts sample text at start
+      // Ref: https://docs.microsoft.com/en-us/javascript/api/word/word.body?view=word-js-preview#inserttext-text--insertlocation-
+      const contractTextRange = body.insertText(text, Word.InsertLocation.start);
+      // Search for variables from sample text
+      // Ref: https://docs.microsoft.com/en-us/javascript/api/word/word.range?view=word-js-preview#search-searchtext--searchoptions-
+      const searchResults = contractTextRange.search('"Party A"');
+      // One just needs to do it.
+      // Ref: https://youtu.be/22P43aerrho?t=511
+      searchResults.load('items/length');
+      await context.sync();
+
+      // Inserts content controls
+      for(let res=0; res<searchResults.items.length; ++res) {
+        // Insert content control where ever "Party A" is found
+        // Ref: https://docs.microsoft.com/en-us/javascript/api/word/word.range?view=word-js-preview#insertcontentcontrol--
+        let contentControl = searchResults.items[res].insertContentControl();
+        contentControl.tag = 'ship';
+        contentControl.title = 'Shipper';
+        const ooxml = contentControl.getOoxml();
+        await context.sync().then(() => {
+          if(res==0) {
+            console.log(ooxml.value);
+          }
+        });
+      }
+      await context.sync();
+    });
+  };
 
   const loadTemplateText = async url => {
-    // Checks if there is an instance of `Worker` and posts message (URL of the template) to it.
-    if (worker) {
-      worker.postMessage({ url });
-    }
+    // URL to compiled archive
+    const template = await Template.fromUrl('https://compiled--templates-accordproject.netlify.app/archives/acceptance-of-delivery@0.13.2.js.cta');
+
+    const sampleText = template.getMetadata().getSample();
+    const clause = new Clause(template);
+    clause.parse(sampleText);
+    const sampleData = clause.getData();
+    setup(sampleText, sampleData);
   };
 
   const goToTemplateDetail = template => {
