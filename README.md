@@ -42,6 +42,17 @@ environment.
 6. For more information on setting up Word add-in for development, follow this
    [documentation](https://docs.microsoft.com/en-us/office/dev/add-ins/quickstarts/word-quickstart).
 
+#### Debugging Add-in
+
+1. **Web version:** Open the browser's developer tools and see the console's
+   output.
+
+2. **Desktop version**
+   -  **Windows:** [Download the developer tool](https://www.microsoft.com/en-us/p/microsoft-edge-devtools-preview/9mzbfrmz0mnj?activetab=pivot:overviewtab)
+   separately. Once you are able to start the server and sideload the add-in,
+   you will see "Accord Project" as an option in the tool.
+   ![edge developer tool](readme_assets/devtool.png)
+
 ## Contributing
 
 The Accord Project technology is being developed as open source. All the
