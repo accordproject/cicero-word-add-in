@@ -52,7 +52,18 @@ environment.
    separately. Once you are able to start the server and sideload the add-in,
    you will see "Accord Project" as an option in the tool.
    ![edge developer tool](readme_assets/devtool.png)
-
+   -  **Mac:**
+      - Open a terminal and run the following 4 commands (this is a one-time setup step)
+      ```
+      defaults write com.microsoft.Word OfficeWebAddinDeveloperExtras -bool true
+      defaults write com.microsoft.Excel OfficeWebAddinDeveloperExtras -bool true
+      defaults write com.microsoft.Powerpoint OfficeWebAddinDeveloperExtras -bool true
+      defaults write com.microsoft.Outlook OfficeWebAddinDeveloperExtras -bool true
+      ```
+      - Sideload your add-in and open it in Word for Mac
+      - Right click inside your add-in and choose "Inspect Element"
+      - The Safari Web Inspector console will automatically open, where you can debug the add-in the same way you would a web app. (ie. Use the `Console` tab to view printed logs and errors, the `Element` tab to inspect the HTML and CSS, the `Network` tab for network calls, etc).
+ 
 ## Contributing
 
 The Accord Project technology is being developed as open source. All the
