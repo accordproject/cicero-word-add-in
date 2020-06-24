@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@accordproject/cicero-core": "^0.20.10",
+    "@accordproject/markdown-cicero": "^0.11.3",
     "@accordproject/ui-components": "^0.93.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.2",
