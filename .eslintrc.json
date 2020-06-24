@@ -5,7 +5,8 @@
     "node": true
   },
   "globals": {
-    "Office": "readonly"
+    "Office": "readonly",
+    "Word": "readonly"
   },
   "parser": "babel-eslint",
   "parserOptions": {
