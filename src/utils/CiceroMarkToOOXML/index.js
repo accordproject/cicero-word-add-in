@@ -1,3 +1,5 @@
+import variableChangeListener from '../VariableChangeListener';
+
 const insertHeading = async (context, value, level) => {
   const definedLevels = {
     1: 28,
@@ -46,6 +48,26 @@ const insertVariable = async (context, title, tag, value) => {
     size: 14,
   });
   await context.sync();
+
+  Office.context.document.bindings.addFromNamedItemAsync(title, 'text', { id: title }, res => {
+    if (res.status === Office.AsyncResultStatus.Succeeded) {
+      res.value.addHandlerAsync(Office.EventType.BindingDataChanged, variableChangeListener, res => {
+        console.log(res);
+        if (res.status === Office.AsyncResultStatus.Succeeded) {
+          // ToDo: show the success to user in Production environment
+          console.info(`Listener attached to ${title}`);
+        }
+        else {
+          // ToDo: show the error to user in Production environment
+          console.error(`Listener failed to attach to ${title}`);
+        }
+      });
+    }
+    else {
+      // ToDo: show the error to user in Production environment
+      console.error(title, res);
+    }
+  });
 };
 
 const definedNodes = {
