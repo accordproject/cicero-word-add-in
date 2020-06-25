@@ -46,19 +46,6 @@ const insertVariable = async (context, title, tag, value) => {
     size: 14,
   });
   await context.sync();
-
-  setTimeout(() => {
-    Office.context.document.bindings.addFromNamedItemAsync(title, 'text', { id: title }, res => {
-      if (res.status === Office.AsyncResultStatus.Succeeded) {
-        res.value.addHandlerAsync(Office.EventType.BindingDataChanged, handler);
-      }
-      else {
-        // ToDo: show the error to user in Production environment
-        console.error(title, res);
-      }
-    });
-  }, 100);
-  await context.sync();
 };
 
 const definedNodes = {
@@ -73,44 +60,7 @@ const definedNodes = {
   variable: 'org.accordproject.ciceromark.Variable',
 };
 
-let counter = {};
-
-const handler = event => {
-  const { binding } = event;
-  // ID of the binding the user changed
-  const bindingId = binding.id;
-  binding.getDataAsync(result => {
-    // The text typed by user to change it
-    const data = result.value;
-    Word.run(async context => {
-      // Get all the simlar variables
-      const contentControl = context.document.contentControls.getByTitle(bindingId).getFirst();
-      contentControl.load('tag');
-      await context.sync();
-      const tag = contentControl.tag;
-      const contentControls = context.document.contentControls.getByTag(tag);
-      contentControls.load('items/length');
-      await context.sync();
-      // To prevent it from an infinite loop, we check if text inside all the variables is same or not.
-      let contentControlText = [];
-      for(let index=0; index<contentControls.items.length; ++index) {
-        let textRange = contentControls.items[index].getRange();
-        textRange.load('text');
-        await context.sync();
-        contentControlText = [textRange.text, ...contentControlText];
-      }
-      if (contentControlText.every(el => el === contentControlText[0])) {
-        return;
-      }
-      for(let index=0; index<contentControls.items.length; ++index) {
-        contentControls.items[index].insertText(data, Word.InsertLocation.replace);
-      }
-      return context.sync();
-    });
-  });
-};
-
-const renderNodes = (context, node, parent=null) => {
+const renderNodes = (context, node, counter, parent=null) => {
   if (node.$class === definedNodes.variable) {
     const tag = node.id;
     if (Object.prototype.hasOwnProperty.call(counter, tag)) {
@@ -142,12 +92,12 @@ const renderNodes = (context, node, parent=null) => {
   }
   if (node.$class === definedNodes.heading) {
     node.nodes.forEach(subNode => {
-      renderNodes(context, subNode, { class: node.$class, level: node.level });
+      renderNodes(context, subNode, counter, { class: node.$class, level: node.level });
     });
   }
   if (node.$class === definedNodes.paragraph) {
     node.nodes.forEach(subNode => {
-      renderNodes(context, subNode);
+      renderNodes(context, subNode, counter);
     });
   }
 };
