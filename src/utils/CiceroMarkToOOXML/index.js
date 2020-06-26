@@ -37,6 +37,26 @@ const insertText = async (context, value) => {
   await context.sync();
 };
 
+const attachEventListener = (context, title) => {
+  Office.context.document.bindings.addFromNamedItemAsync(title, 'text', { id: title }, res => {
+    if (res.status === Office.AsyncResultStatus.Succeeded) {
+      res.value.addHandlerAsync(Office.EventType.BindingDataChanged, variableChangeListener, res => {
+        if (res.status === Office.AsyncResultStatus.Succeeded) {
+          // ToDo: show the success to user in Production environment
+          console.info(`Listener attached to ${title}`);
+          return;
+        }
+        else {
+          attachEventListener(context, title);
+        }
+      });
+    }
+    else {
+      attachEventListener(context, title);
+    }
+  });
+};
+
 const insertVariable = async (context, title, tag, value) => {
   let variableText = context.document.body.insertText(value, Word.InsertLocation.end);
   let contentControl = variableText.insertContentControl();
@@ -49,25 +69,8 @@ const insertVariable = async (context, title, tag, value) => {
   });
   await context.sync();
 
-  Office.context.document.bindings.addFromNamedItemAsync(title, 'text', { id: title }, res => {
-    if (res.status === Office.AsyncResultStatus.Succeeded) {
-      res.value.addHandlerAsync(Office.EventType.BindingDataChanged, variableChangeListener, res => {
-        console.log(res);
-        if (res.status === Office.AsyncResultStatus.Succeeded) {
-          // ToDo: show the success to user in Production environment
-          console.info(`Listener attached to ${title}`);
-        }
-        else {
-          // ToDo: show the error to user in Production environment
-          console.error(`Listener failed to attach to ${title}`);
-        }
-      });
-    }
-    else {
-      // ToDo: show the error to user in Production environment
-      console.error(title, res);
-    }
-  });
+  // If the app ever goes into an infinite loop, it is probably because of this function call.
+  attachEventListener(context, title);
 };
 
 const definedNodes = {
