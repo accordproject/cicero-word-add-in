@@ -1,4 +1,4 @@
-import variableChangeListener from '../VariableChangeListener';
+import attachVariableChangeListener from '../AttachVariableChangeListener';
 
 const insertHeading = async (context, value, level) => {
   const definedLevels = {
@@ -37,26 +37,6 @@ const insertText = async (context, value) => {
   await context.sync();
 };
 
-const attachEventListener = (context, title) => {
-  Office.context.document.bindings.addFromNamedItemAsync(title, 'text', { id: title }, res => {
-    if (res.status === Office.AsyncResultStatus.Succeeded) {
-      res.value.addHandlerAsync(Office.EventType.BindingDataChanged, variableChangeListener, res => {
-        if (res.status === Office.AsyncResultStatus.Succeeded) {
-          // ToDo: show the success to user in Production environment
-          console.info(`Listener attached to ${title}`);
-          return;
-        }
-        else {
-          attachEventListener(context, title);
-        }
-      });
-    }
-    else {
-      attachEventListener(context, title);
-    }
-  });
-};
-
 const insertVariable = async (context, title, tag, value) => {
   let variableText = context.document.body.insertText(value, Word.InsertLocation.end);
   let contentControl = variableText.insertContentControl();
@@ -70,7 +50,7 @@ const insertVariable = async (context, title, tag, value) => {
   await context.sync();
 
   // If the app ever goes into an infinite loop, it is probably because of this function call.
-  attachEventListener(context, title);
+  attachVariableChangeListener(context, title);
 };
 
 const definedNodes = {

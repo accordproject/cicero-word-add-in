@@ -1,3 +1,23 @@
+const attachVariableChangeListener = (context, title) => {
+  Office.context.document.bindings.addFromNamedItemAsync(title, Office.CoercionType.Text, { id: title }, res => {
+    if (res.status === Office.AsyncResultStatus.Succeeded) {
+      res.value.addHandlerAsync(Office.EventType.BindingDataChanged, variableChangeListener, res => {
+        if (res.status === Office.AsyncResultStatus.Succeeded) {
+          // ToDo: show the success to user in Production environment
+          console.info(`Listener attached to ${title}`);
+          return;
+        }
+        else {
+          attachVariableChangeListener(context, title);
+        }
+      });
+    }
+    else {
+      attachVariableChangeListener(context, title);
+    }
+  });
+};
+
 const variableChangeListener = event => {
   const { binding } = event;
   // ID of the binding the user changed
@@ -33,4 +53,4 @@ const variableChangeListener = event => {
   });
 };
 
-export default variableChangeListener;
+export default attachVariableChangeListener;
