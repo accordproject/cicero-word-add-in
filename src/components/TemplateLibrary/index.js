@@ -13,7 +13,7 @@ const LibraryComponent = () => {
 
   useEffect(() => {
     async function load() {
-      const templateLibrary = new TemplateLibrary();
+      const templateLibrary = new TemplateLibrary('https://deploy-preview-344--templates-accordproject.netlify.app');
       const templateIndex = await templateLibrary
         .getTemplateIndex({
           latestVersion: true,
@@ -37,10 +37,10 @@ const LibraryComponent = () => {
     });
   };
 
-  const loadTemplateText = async url => {
+  const loadTemplateText = async templateIndex => {
     // URL to compiled archive
-    const template = await Template.fromUrl('https://compiled--templates-accordproject.netlify.app/archives/acceptance-of-delivery@0.13.2.js.cta');
-
+    const url = new URL(templateIndex.ciceroUrl);
+    const template = await Template.fromUrl(`https://deploy-preview-344--templates-accordproject.netlify.app${url.pathname}`);
     const sampleText = template.getMetadata().getSample();
     const clause = new Clause(template);
     clause.parse(sampleText);
@@ -63,8 +63,8 @@ const LibraryComponent = () => {
   return (
     <TemplateLibraryRenderer
       items = {templates}
-      onPrimaryButtonClick={template => loadTemplateText(template.url)}
-      onSecondaryButtonClick={template => goToTemplateDetail(template)}
+      onPrimaryButtonClick={loadTemplateText}
+      onSecondaryButtonClick={goToTemplateDetail}
     />
   );
 };
