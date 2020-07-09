@@ -11,7 +11,7 @@ const insertHeading = async (context, value, level) => {
   };
   context.document.body.insertParagraph(value, Word.InsertLocation.end).font.set({
     color: 'black',
-    bold: false,
+    highlightColor: null,
     size: definedLevels[level],
   });
   insertLineBreak(context);
@@ -30,8 +30,8 @@ const insertSoftBreak = async context => {
 
 const insertText = async (context, value) => {
   context.document.body.insertText(value, Word.InsertLocation.end).font.set({
-    bold: false,
     color: 'black',
+    highlightColor: null,
     size: 14,
   });
   await context.sync();
@@ -44,7 +44,7 @@ const insertVariable = async (context, title, tag, value) => {
   contentControl.tag = tag;
   contentControl.font.set({
     color: 'black',
-    bold: true,
+    highlightColor: 'lime',
     size: 14,
   });
   await context.sync();
