@@ -2,17 +2,17 @@ import attachVariableChangeListener from '../AttachVariableChangeListener';
 
 const insertHeading = async (context, value, level) => {
   const definedLevels = {
-    1: 28,
-    2: 26,
-    3: 24,
-    4: 22,
-    5: 20,
-    6: 18,
+    1: Word.Style.heading1,
+    2: Word.Style.heading2,
+    3: Word.Style.heading3,
+    4: Word.Style.heading4,
+    5: Word.Style.heading5,
+    6: Word.Style.heading6,
   };
-  context.document.body.insertParagraph(value, Word.InsertLocation.end).font.set({
-    color: 'black',
+  const heading = context.document.body.insertParagraph(value, Word.InsertLocation.end);
+  heading.styleBuiltIn = definedLevels[level];
+  heading.font.set({
     highlightColor: null,
-    size: definedLevels[level],
   });
   insertLineBreak(context);
   await context.sync();
