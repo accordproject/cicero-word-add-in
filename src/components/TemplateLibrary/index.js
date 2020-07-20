@@ -26,6 +26,7 @@ const LibraryComponent = () => {
   const setup = async dom => {
     await Word.run(async context => {
       let counter = {};
+      context.document.body.insertBreak(Word.BreakType.line, Word.InsertLocation.end);
       dom.nodes.forEach(node => {
         renderNodes(context, node, counter);
       });
