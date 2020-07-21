@@ -29,12 +29,14 @@ const insertSoftBreak = async context => {
   await context.sync();
 };
 
-const insertText = async (context, value) => {
-  context.document.body.insertText(value, Word.InsertLocation.end).font.set({
+const insertText = async (context, value, emphasize=false) => {
+  const text = context.document.body.insertText(value, Word.InsertLocation.end);
+  text.font.set({
     color: 'black',
     highlightColor: null,
     size: 12,
   });
+  text.font.italic = emphasize;
   await context.sync();
 };
 
@@ -64,6 +66,7 @@ const definedNodes = {
   softbreak: 'org.accordproject.commonmark.Softbreak',
   text: 'org.accordproject.commonmark.Text',
   variable: 'org.accordproject.ciceromark.Variable',
+  emphasize: 'org.accordproject.commonmark.Emph',
 };
 
 const renderNodes = (context, node, counter, parent=null) => {
@@ -87,6 +90,9 @@ const renderNodes = (context, node, counter, parent=null) => {
     if (parent !== null && parent.class === definedNodes.heading) {
       insertHeading(context, node.text, parent.level);
     }
+    else if (parent !== null && parent.class === definedNodes.emphasize) {
+      insertText(context, node.text, true);
+    }
     else {
       insertText(context, node.text);
     }
@@ -95,6 +101,11 @@ const renderNodes = (context, node, counter, parent=null) => {
   if (node.$class === definedNodes.softbreak) {
     insertSoftBreak(context);
     return;
+  }
+  if (node.$class === definedNodes.emphasize) {
+    node.nodes.forEach(subNode => {
+      renderNodes(context, subNode, counter, { class: node.$class });
+    });
   }
   if (node.$class === definedNodes.heading) {
     node.nodes.forEach(subNode => {
