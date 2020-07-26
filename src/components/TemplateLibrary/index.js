@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Loader } from 'semantic-ui-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Loader, Divider, Button, Icon } from 'semantic-ui-react';
 
 import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 
 import renderNodes from '../../utils/CiceroMarkToOOXML';
 
+import './index.css';
+
 const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
   const [overallCounter, setOverallCounter] = useState({});
+
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     async function load() {
@@ -22,11 +26,26 @@ const LibraryComponent = () => {
     load();
   }, []);
 
-  const setup = async dom => {
+  const uploadTemplate = async event => {
+    const fileUploaded = event.target.files[0];
+    try {
+      const template = await Template.fromArchive(fileUploaded);
+      setup(template);
+    }
+    catch (error) {
+      // show error
+    }
+  };
+
+  const setup = async template => {
+    const sampleText = template.getMetadata().getSample();
+    const clause = new Clause(template);
+    clause.parse(sampleText);
+    const ciceroMark = clause.draft({ format : 'ciceromark_parsed' });
     await Word.run(async context => {
       let counter = {};
       context.document.body.insertBreak(Word.BreakType.line, Word.InsertLocation.end);
-      dom.nodes.forEach(node => {
+      ciceroMark.nodes.forEach(node => {
         renderNodes(context, node, counter);
       });
       await context.sync();
@@ -40,11 +59,7 @@ const LibraryComponent = () => {
   const loadTemplateText = async templateIndex => {
     // URL to compiled archive
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
-    const sampleText = template.getMetadata().getSample();
-    const clause = new Clause(template);
-    clause.parse(sampleText);
-    const ciceroMark = clause.draft({ format : 'ciceromark_parsed' });
-    setup(ciceroMark);
+    setup(template);
   };
 
   const goToTemplateDetail = template => {
@@ -58,11 +73,28 @@ const LibraryComponent = () => {
   }
 
   return (
-    <TemplateLibraryRenderer
-      items = {templates}
-      onPrimaryButtonClick={loadTemplateText}
-      onSecondaryButtonClick={goToTemplateDetail}
-    />
+    <div className="template-container">
+      <div className="upload-template">
+        <Button icon labelPosition="left" onClick={() => fileInputRef.current.click()}>
+          <Icon name="upload" />
+          Upload your tempate
+          <input
+            ref={fileInputRef}
+            type="file"
+            hidden
+            onChange={uploadTemplate}
+          />
+        </Button>
+      </div>
+      <Divider horizontal>Or</Divider>
+      <div>
+        <TemplateLibraryRenderer
+          items = {templates}
+          onPrimaryButtonClick={loadTemplateText}
+          onSecondaryButtonClick={goToTemplateDetail}
+        />
+      </div>
+    </div>
   );
 };
 

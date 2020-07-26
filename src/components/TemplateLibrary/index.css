@@ -1,0 +1,9 @@
+.template-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.upload-template {
+    display: flex;
+    justify-content: center;
+}
