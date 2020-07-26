@@ -56,6 +56,35 @@ const insertVariable = async (context, title, tag, value) => {
   attachVariableChangeListener(context, title);
 };
 
+const insertList = async (context, node, type) => {
+  let html = `<br><${type}>`;
+  node.nodes.forEach(subNode => {
+    html += `<li>${getListItem(subNode)}</li>`;
+  });
+  // Workaround to prevent last item to fall off the list
+  html += `</${type}><br>`;
+  context.document.body.insertHtml(html, Word.InsertLocation.end);
+  await context.sync();
+};
+
+const getListItem = (node, text='') => {
+  if (node.$class === definedNodes.text) {
+    return node.text;
+  }
+  if (node.$class === definedNodes.variable) {
+    return node.value;
+  }
+  if (node.$class === definedNodes.softbreak) {
+    return ' ';
+  }
+  if (node.nodes !== undefined) {
+    node.nodes.forEach(subNode => {
+      text += getListItem(subNode, text);
+    });
+  }
+  return text;
+};
+
 const definedNodes = {
   computedVariable: 'org.accordproject.ciceromark.ComputedVariable',
   heading: 'org.accordproject.commonmark.Heading',
@@ -106,6 +135,18 @@ const renderNodes = (context, node, counter, parent=null) => {
     node.nodes.forEach(subNode => {
       renderNodes(context, subNode, counter, { class: node.$class });
     });
+  }
+  if (node.$class === definedNodes.listVariable || node.$class === definedNodes.list) {
+    switch (node.type) {
+    case 'ordered':
+      insertList(context, node, 'ol');
+      return;
+    case 'bullet':
+      insertList(context, node, 'ul');
+      return;
+    default:
+      return;
+    }
   }
   if (node.$class === definedNodes.heading) {
     node.nodes.forEach(subNode => {
