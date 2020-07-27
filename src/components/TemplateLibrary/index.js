@@ -3,7 +3,6 @@ import { Loader } from 'semantic-ui-react';
 
 import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
-import { CiceroMarkTransformer } from '@accordproject/markdown-cicero';
 
 import renderNodes from '../../utils/CiceroMarkToOOXML';
 
@@ -13,7 +12,7 @@ const LibraryComponent = () => {
 
   useEffect(() => {
     async function load() {
-      const templateLibrary = new TemplateLibrary('https://deploy-preview-344--templates-accordproject.netlify.app');
+      const templateLibrary = new TemplateLibrary();
       const templateIndex = await templateLibrary
         .getTemplateIndex({
           latestVersion: true,
@@ -40,15 +39,12 @@ const LibraryComponent = () => {
 
   const loadTemplateText = async templateIndex => {
     // URL to compiled archive
-    const url = new URL(templateIndex.ciceroUrl);
-    const template = await Template.fromUrl(`https://deploy-preview-344--templates-accordproject.netlify.app${url.pathname}`);
+    const template = await Template.fromUrl(templateIndex.ciceroUrl);
     const sampleText = template.getMetadata().getSample();
     const clause = new Clause(template);
     clause.parse(sampleText);
-    const sampleWrapped = await clause.draft({ wrapVariables: true });
-    const ciceroMarkTransformer = new CiceroMarkTransformer();
-    const ciceroDOM = ciceroMarkTransformer.fromMarkdown(sampleWrapped, 'json');
-    setup(ciceroDOM);
+    const ciceroMark = clause.draft({ format : 'ciceromark_parsed' });
+    setup(ciceroMark);
   };
 
   const goToTemplateDetail = template => {

@@ -68,7 +68,7 @@ const definedNodes = {
 
 const renderNodes = (context, node, counter, parent=null) => {
   if (node.$class === definedNodes.variable) {
-    const tag = node.id;
+    const tag = node.name;
     if (Object.prototype.hasOwnProperty.call(counter, tag)) {
       counter = {
         ...counter,
