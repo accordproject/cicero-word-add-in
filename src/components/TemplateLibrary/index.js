@@ -82,6 +82,10 @@ const LibraryComponent = () => {
             ref={fileInputRef}
             type="file"
             hidden
+            onClick={event => {
+              event.persist();
+              event.target.value = null;
+            }}
             onChange={uploadTemplate}
           />
         </Button>
