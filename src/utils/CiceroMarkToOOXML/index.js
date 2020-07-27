@@ -90,7 +90,7 @@ const definedNodes = {
   heading: 'org.accordproject.commonmark.Heading',
   item: 'org.accordproject.commonmark.Item',
   list: 'org.accordproject.commonmark.List',
-  listVariable: 'org.accordproject.ciceromark.ListVariable',
+  listBlock: 'org.accordproject.ciceromark.ListBlock',
   paragraph: 'org.accordproject.commonmark.Paragraph',
   softbreak: 'org.accordproject.commonmark.Softbreak',
   text: 'org.accordproject.commonmark.Text',
@@ -136,7 +136,7 @@ const renderNodes = (context, node, counter, parent=null) => {
       renderNodes(context, subNode, counter, { class: node.$class });
     });
   }
-  if (node.$class === definedNodes.listVariable || node.$class === definedNodes.list) {
+  if (node.$class === definedNodes.listBlock || node.$class === definedNodes.list) {
     switch (node.type) {
     case 'ordered':
       insertList(context, node, 'ol');
