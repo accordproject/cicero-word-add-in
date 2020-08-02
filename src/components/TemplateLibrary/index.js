@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Loader, Divider, Button, Icon } from 'semantic-ui-react';
+import { Loader } from 'semantic-ui-react';
 
 import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 
 import renderNodes from '../../utils/CiceroMarkToOOXML';
 
-import './index.css';
-
 const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
   const [overallCounter, setOverallCounter] = useState({});
-
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     async function load() {
@@ -26,7 +22,7 @@ const LibraryComponent = () => {
     load();
   }, []);
 
-  const uploadTemplate = async event => {
+  const onUploadTemplate = async event => {
     const fileUploaded = event.target.files[0];
     try {
       const template = await Template.fromArchive(fileUploaded);
@@ -73,32 +69,12 @@ const LibraryComponent = () => {
   }
 
   return (
-    <div className="template-container">
-      <div className="upload-template">
-        <Button icon labelPosition="left" onClick={() => fileInputRef.current.click()}>
-          <Icon name="upload" />
-          Upload your tempate
-          <input
-            ref={fileInputRef}
-            type="file"
-            hidden
-            onClick={event => {
-              event.persist();
-              event.target.value = null;
-            }}
-            onChange={uploadTemplate}
-          />
-        </Button>
-      </div>
-      <Divider horizontal>Or</Divider>
-      <div>
-        <TemplateLibraryRenderer
-          items = {templates}
-          onPrimaryButtonClick={loadTemplateText}
-          onSecondaryButtonClick={goToTemplateDetail}
-        />
-      </div>
-    </div>
+    <TemplateLibraryRenderer
+      items = {templates}
+      onPrimaryButtonClick={loadTemplateText}
+      onSecondaryButtonClick={goToTemplateDetail}
+      onUploadItem={onUploadTemplate}
+    />
   );
 };
 
