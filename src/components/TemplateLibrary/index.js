@@ -6,9 +6,13 @@ import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 
 import renderNodes from '../../utils/CiceroMarkToOOXML';
 
+const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
+const CUSTOM_XML_NAMESPACE = 'https://accordproject.org/';
+
 const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
   const [overallCounter, setOverallCounter] = useState({});
+  const [selectedTemplates, selectTemplate] = useState({});
 
   useEffect(() => {
     async function load() {
@@ -56,6 +60,51 @@ const LibraryComponent = () => {
     // URL to compiled archive
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
     setup(template);
+    const templateIdentifier = `${templateIndex.name}@${templateIndex.version}`;
+    selectTemplate({
+      ...selectedTemplates,
+      [templateIdentifier]: template,
+    });
+    saveTemplateToXml(templateIdentifier);
+  };
+
+  const saveTemplateToXml = templateIdentifier => {
+    Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        if (result.value.length === 0) {
+          const xml = XML_HEADER +
+          `<templates xmlns="${CUSTOM_XML_NAMESPACE}">` +
+            `<template xmlns="${templateIdentifier}" />` +
+          '</templates>';
+          Office.context.document.customXmlParts.addAsync(xml);
+        }
+        else {
+          const customXml = result.value[0];
+          customXml.getNodesAsync('*/*', result => {
+            if (result.status === Office.AsyncResultStatus.Succeeded) {
+              let newXml = XML_HEADER + `<templates xmlns="${CUSTOM_XML_NAMESPACE}">`;
+              if (result.value.length > 0) {
+                for (let node=0; node < result.value.length; ++node) {
+                  if (result.value[node].namespaceUri !== templateIdentifier) {
+                    newXml += `<template xmlns="${result.value[node].namespaceUri}" />`;
+                  }
+                }
+              }
+              newXml += `<template xmlns="${templateIdentifier}" />`;
+              newXml += '</templates>';
+              Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, res => {
+                if (res.status === Office.AsyncResultStatus.Succeeded) {
+                  for (let index=0; index<res.value.length; ++index) {
+                    res.value[index].deleteAsync();
+                  }
+                }
+              });
+              Office.context.document.customXmlParts.addAsync(newXml);
+            }
+          });
+        }
+      }
+    });
   };
 
   const goToTemplateDetail = template => {
