@@ -11,6 +11,7 @@ module.exports = async (env, options) => {
     entry: {
       polyfill: 'babel-polyfill',
       main: './src/index.js',
+      badFile: './src/error/BadFile/index.js',
     },
     resolve: {
       extensions: ['.html', '.js'],
@@ -51,6 +52,11 @@ module.exports = async (env, options) => {
       new HtmlWebpackPlugin({
         filename: 'index.html',
         template: './src/index.html',
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'bad-file.html',
+        template: './src/error/BadFile/index.html',
+        chunks: ['badFile'],
       }),
       new CopyWebpackPlugin({
         patterns: [
