@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Loader } from 'semantic-ui-react';
 
 import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
@@ -29,7 +29,7 @@ const LibraryComponent = () => {
       setup(template);
     }
     catch (error) {
-      // show error
+      Office.context.ui.displayDialogAsync(`${window.location.origin}/bad-file.html`, { width: 30, height: 8 });
     }
   };
 
