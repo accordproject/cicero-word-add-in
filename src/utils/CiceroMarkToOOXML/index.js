@@ -53,9 +53,6 @@ const insertVariable = async (context, title, tag, value) => {
     size: 12,
   });
   await context.sync();
-
-  // If the app ever goes into an infinite loop, it is probably because of this function call.
-  attachVariableChangeListener(context, title);
 };
 
 const insertList = async (context, node, type) => {

@@ -1,4 +1,4 @@
-const attachVariableChangeListener = (context, title) => {
+const attachVariableChangeListener = (title) => {
   Office.context.document.bindings.addFromNamedItemAsync(title, Office.CoercionType.Text, { id: title }, res => {
     if (res.status === Office.AsyncResultStatus.Succeeded) {
       res.value.addHandlerAsync(Office.EventType.BindingDataChanged, variableChangeListener, res => {
@@ -8,12 +8,12 @@ const attachVariableChangeListener = (context, title) => {
           return;
         }
         else {
-          attachVariableChangeListener(context, title);
+          attachVariableChangeListener(title);
         }
       });
     }
     else {
-      attachVariableChangeListener(context, title);
+      attachVariableChangeListener(title);
     }
   });
 };

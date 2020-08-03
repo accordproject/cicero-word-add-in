@@ -5,6 +5,7 @@ import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 
 import renderNodes from '../../utils/CiceroMarkToOOXML';
+import attachVariableChangeListener from '../../utils/AttachVariableChangeListener';
 
 const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
 const CUSTOM_XML_NAMESPACE = 'https://accordproject.org/';
@@ -12,7 +13,6 @@ const CUSTOM_XML_NAMESPACE = 'https://accordproject.org/';
 const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
   const [overallCounter, setOverallCounter] = useState({});
-  const [selectedTemplates, selectTemplate] = useState({});
 
   useEffect(() => {
     async function load() {
@@ -21,7 +21,7 @@ const LibraryComponent = () => {
         .getTemplateIndex({
           latestVersion: true,
         });
-      setTemplates(Object.values(templateIndex));
+      setTemplates(templateIndex);
     }
     load();
   }, []);
@@ -37,11 +37,37 @@ const LibraryComponent = () => {
     }
   };
 
-  const setup = async template => {
-    const sampleText = template.getMetadata().getSample();
-    const clause = new Clause(template);
-    clause.parse(sampleText);
-    const ciceroMark = clause.draft({ format : 'ciceromark_parsed' });
+  useEffect(() => {
+    async function initializeDocument() {
+      Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
+        if (result.status === Office.AsyncResultStatus.Succeeded) {
+          if (result.value.length > 0) {
+            const customXmlPart = result.value[0];
+            customXmlPart.getNodesAsync('*/*', async result => {
+              if (result.status === Office.AsyncResultStatus.Succeeded) {
+                for (let index=0; index<result.value.length; ++index) {
+                  const namespaceUri = result.value[index].namespaceUri;
+                  const templateIndex = templates[namespaceUri];
+                  const template = await Template.fromUrl(templateIndex.ciceroUrl);
+                  const numeration = {attachment: 1, businessDays: 1, deliverable: 5, receiver: 3, shipper: 4};
+                  for (const variableText in numeration) {
+                    for (let index=1; index<=numeration[variableText]; ++index) {
+                      attachVariableChangeListener(`${variableText.toUpperCase()[0]}${variableText.substring(1)}${index}`)
+                    }
+                  }
+                }
+              }
+            })
+          }
+        }
+      });
+    }
+    if (templates !== null) {
+      initializeDocument();
+    }
+  }, [templates])
+
+  const setup = async dom => {
     await Word.run(async context => {
       let counter = {};
       context.document.body.insertBreak(Word.BreakType.line, Word.InsertLocation.end);
@@ -53,6 +79,11 @@ const LibraryComponent = () => {
         ...overallCounter,
         ...counter,
       });
+      for (const variableText in counter) {
+        for (let index=1; index<=counter[variableText]; ++index) {
+          attachVariableChangeListener(`${variableText.toUpperCase()[0]}${variableText.substring(1)}${index}`)
+        }
+      }
     });
   };
 
@@ -61,10 +92,6 @@ const LibraryComponent = () => {
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
     setup(template);
     const templateIdentifier = `${templateIndex.name}@${templateIndex.version}`;
-    selectTemplate({
-      ...selectedTemplates,
-      [templateIdentifier]: template,
-    });
     saveTemplateToXml(templateIdentifier);
   };
 
@@ -79,8 +106,8 @@ const LibraryComponent = () => {
           Office.context.document.customXmlParts.addAsync(xml);
         }
         else {
-          const customXml = result.value[0];
-          customXml.getNodesAsync('*/*', result => {
+          const customXmlPart = result.value[0];
+          customXmlPart.getNodesAsync('*/*', result => {
             if (result.status === Office.AsyncResultStatus.Succeeded) {
               let newXml = XML_HEADER + `<templates xmlns="${CUSTOM_XML_NAMESPACE}">`;
               if (result.value.length > 0) {
@@ -119,7 +146,7 @@ const LibraryComponent = () => {
 
   return (
     <TemplateLibraryRenderer
-      items = {templates}
+      items = {Object.values(templates)}
       onPrimaryButtonClick={loadTemplateText}
       onSecondaryButtonClick={goToTemplateDetail}
       onUploadItem={onUploadTemplate}
