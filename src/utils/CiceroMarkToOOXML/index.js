@@ -1,4 +1,3 @@
-import attachVariableChangeListener from '../AttachVariableChangeListener';
 import sanitizeHtmlChars from '../SanitizeHtmlChars';
 import unorderedListSpec from '../../constants/UnorderedListSpec';
 
