@@ -76,7 +76,7 @@ const LibraryComponent = () => {
 
   const setup = async ciceroMark => {
     await Word.run(async context => {
-      let counter = {};
+      let counter = {...overallCounter};
       context.document.body.insertBreak(Word.BreakType.line, Word.InsertLocation.end);
       ciceroMark.nodes.forEach(node => {
         renderNodes(context, node, counter);
