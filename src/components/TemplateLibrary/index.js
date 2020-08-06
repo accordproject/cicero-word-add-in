@@ -6,6 +6,7 @@ import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 
 import renderNodes from '../../utils/CiceroMarkToOOXML';
 import attachVariableChangeListener from '../../utils/AttachVariableChangeListener';
+import VariableVisitor from '../../utils/VariableVisitor';
 
 const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
 const CUSTOM_XML_NAMESPACE = 'https://accordproject.org/';
@@ -49,15 +50,21 @@ const LibraryComponent = () => {
                   const namespaceUri = result.value[index].namespaceUri;
                   const templateIndex = templates[namespaceUri];
                   const template = await Template.fromUrl(templateIndex.ciceroUrl);
-                  const numeration = {attachment: 1, businessDays: 1, deliverable: 5, receiver: 3, shipper: 4};
-                  for (const variableText in numeration) {
-                    for (let index=1; index<=numeration[variableText]; ++index) {
-                      attachVariableChangeListener(`${variableText.toUpperCase()[0]}${variableText.substring(1)}${index}`)
+                  const ciceroMark = templateToCiceroMark(template);
+                  const numeration = VariableVisitor.getVariables(ciceroMark);
+                  Word.run(async context => {
+                    const contentControls = context.document.body.contentControls;
+                    contentControls.load(['items/length', 'title']);
+                    await context.sync();
+                    for (let index=0; index<contentControls.items.length; ++index) {
+                      if (numeration.includes(contentControls.items[index].title)) {
+                        attachVariableChangeListener(contentControls.items[index].title);
+                      }
                     }
-                  }
+                  });
                 }
               }
-            })
+            });
           }
         }
       });
@@ -65,9 +72,9 @@ const LibraryComponent = () => {
     if (templates !== null) {
       initializeDocument();
     }
-  }, [templates])
+  }, [templates]);
 
-  const setup = async dom => {
+  const setup = async ciceroMark => {
     await Word.run(async context => {
       let counter = {};
       context.document.body.insertBreak(Word.BreakType.line, Word.InsertLocation.end);
@@ -81,16 +88,25 @@ const LibraryComponent = () => {
       });
       for (const variableText in counter) {
         for (let index=1; index<=counter[variableText]; ++index) {
-          attachVariableChangeListener(`${variableText.toUpperCase()[0]}${variableText.substring(1)}${index}`)
+          attachVariableChangeListener(`${variableText.toUpperCase()[0]}${variableText.substring(1)}${index}`);
         }
       }
     });
   };
 
+  const templateToCiceroMark = template => {
+    const sampleText = template.getMetadata().getSample();
+    const clause = new Clause(template);
+    clause.parse(sampleText);
+    const ciceroMark = clause.draft({ format : 'ciceromark_parsed' });
+    return ciceroMark;
+  };
+
   const loadTemplateText = async templateIndex => {
     // URL to compiled archive
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
-    setup(template);
+    const ciceroMark = templateToCiceroMark(template);
+    setup(ciceroMark);
     const templateIdentifier = `${templateIndex.name}@${templateIndex.version}`;
     saveTemplateToXml(templateIdentifier);
   };
