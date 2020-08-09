@@ -38,6 +38,16 @@ const insertSoftBreak = () => {
 };
 
 const insertText = (value, emphasize=false) => {
+  if (emphasize) {
+    return `
+      <w:r>
+        <w:rPr>
+          <w:i w:val="true" />
+        </w:rPr>
+        <w:t>${sanitizeHtmlChars(value)}</w:t>
+      </w:r>
+    `;
+  }
   return `
     <w:r>
       <w:t xml:space="preserve">${sanitizeHtmlChars(value)}</w:t>
@@ -171,11 +181,13 @@ const getNodes = (node, counter, parent=null) => {
   if (node.$class === definedNodes.softbreak) {
     return insertSoftBreak();
   }
-  // if (node.$class === definedNodes.emphasize) {
-  //   node.nodes.forEach(subNode => {
-  //     getNodes(context, subNode, counter, ooxml, { class: node.$class });
-  //   });
-  // }
+  if (node.$class === definedNodes.emphasize) {
+    let ooxml = '';
+    node.nodes.forEach(subNode => {
+      ooxml += getNodes(subNode, counter, { class: node.$class });
+    });
+    return ooxml;
+  }
   if (node.$class === definedNodes.listBlock || node.$class === definedNodes.list) {
     switch (node.type) {
     case 'ordered':
@@ -212,6 +224,7 @@ const getNodes = (node, counter, parent=null) => {
       </w:p>
     `;
   }
+  return '';
 };
 
 const ooxmlGenerator = (ciceroMark, counter, ooxml) => {
