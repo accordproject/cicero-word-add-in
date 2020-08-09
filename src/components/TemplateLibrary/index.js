@@ -4,12 +4,13 @@ import { Loader } from 'semantic-ui-react';
 import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 
-import renderNodes from '../../utils/CiceroMarkToOOXML';
+import ooxmlGenerator from '../../utils/CiceroMarkToOOXML';
 import attachVariableChangeListener from '../../utils/AttachVariableChangeListener';
 import VariableVisitor from '../../utils/VariableVisitor';
+import spec from '../../constants/spec';
 
-const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
 const CUSTOM_XML_NAMESPACE = 'https://accordproject.org/';
+const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
 
 const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
@@ -31,7 +32,8 @@ const LibraryComponent = () => {
     const fileUploaded = event.target.files[0];
     try {
       const template = await Template.fromArchive(fileUploaded);
-      setup(template);
+      const ciceroMark = templateToCiceroMark(template);
+      setup(ciceroMark);
     }
     catch (error) {
       Office.context.ui.displayDialogAsync(`${window.location.origin}/bad-file.html`, { width: 30, height: 8 });
@@ -76,11 +78,27 @@ const LibraryComponent = () => {
 
   const setup = async ciceroMark => {
     await Word.run(async context => {
-      let counter = {...overallCounter};
-      context.document.body.insertBreak(Word.BreakType.line, Word.InsertLocation.end);
-      ciceroMark.nodes.forEach(node => {
-        renderNodes(context, node, counter);
-      });
+      let counter = { ...overallCounter };
+      let ooxml = ooxmlGenerator(ciceroMark, counter, '');
+      ooxml = `<pkg:package xmlns:pkg="http://schemas.microsoft.com/office/2006/xmlPackage">
+      <pkg:part pkg:name="/_rels/.rels" pkg:contentType="application/vnd.openxmlformats-package.relationships+xml">
+        <pkg:xmlData>
+          <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+            <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+          </Relationships>
+        </pkg:xmlData>
+      </pkg:part>
+      <pkg:part pkg:name="/word/document.xml" pkg:contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml">
+        <pkg:xmlData>
+          <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" >
+          ${ooxml}
+          <w:p />
+          </w:document>
+        </pkg:xmlData>
+      </pkg:part>
+      ${spec}
+      </pkg:package>`;
+      context.document.body.insertOoxml(ooxml, Word.InsertLocation.end);
       await context.sync();
       setOverallCounter({
         ...overallCounter,
