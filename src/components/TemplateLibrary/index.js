@@ -32,8 +32,9 @@ const LibraryComponent = () => {
     const fileUploaded = event.target.files[0];
     try {
       const template = await Template.fromArchive(fileUploaded);
+      const templateIdentifier = template.getIdentifier();
       const ciceroMark = templateToCiceroMark(template);
-      setup(ciceroMark);
+      setup(ciceroMark, templateIdentifier);
     }
     catch (error) {
       Office.context.ui.displayDialogAsync(`${window.location.origin}/bad-file.html`, { width: 30, height: 8 });
@@ -76,10 +77,21 @@ const LibraryComponent = () => {
     }
   }, [templates]);
 
-  const setup = async ciceroMark => {
+  const setup = async (ciceroMark, templateIdentifier) => {
     await Word.run(async context => {
       let counter = { ...overallCounter };
       let ooxml = ooxmlGenerator(ciceroMark, counter, '');
+      ooxml = `
+        <w:sdt>
+          <w:sdtPr>
+            <w:lock w:val="contentLocked" />
+            <w:alias w:val="${templateIdentifier}"/>
+          </w:sdtPr>
+          <w:sdtContent>
+          ${ooxml}
+          </w:sdtContent>
+        </w:sdt>
+      `;
       ooxml = `<pkg:package xmlns:pkg="http://schemas.microsoft.com/office/2006/xmlPackage">
       <pkg:part pkg:name="/_rels/.rels" pkg:contentType="application/vnd.openxmlformats-package.relationships+xml">
         <pkg:xmlData>
@@ -124,8 +136,8 @@ const LibraryComponent = () => {
     // URL to compiled archive
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
     const ciceroMark = templateToCiceroMark(template);
-    setup(ciceroMark);
-    const templateIdentifier = `${templateIndex.name}@${templateIndex.version}`;
+    const templateIdentifier = template.getIdentifier();
+    setup(ciceroMark, templateIdentifier);
     saveTemplateToXml(templateIdentifier);
   };
 
