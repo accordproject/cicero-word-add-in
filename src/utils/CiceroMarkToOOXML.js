@@ -1,4 +1,4 @@
-import sanitizeHtmlChars from '../SanitizeHtmlChars';
+import sanitizeHtmlChars from './SanitizeHtmlChars';
 
 let globalOoxml;
 
