@@ -7,6 +7,9 @@
 .startup-container {
     padding: 1em;
     background-color: #ffffff;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
 
 .checkbox {
