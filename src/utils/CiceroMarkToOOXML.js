@@ -32,7 +32,7 @@ const insertLineBreak = () => {
 const insertSoftBreak = () => {
   return `
     <w:r>
-      <w:t xml:space="preserve"> </w:t>
+      <w:sym w:font="Calibri" w:char="2009" />
     </w:r>
   `;
 };
