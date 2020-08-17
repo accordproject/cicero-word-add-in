@@ -28,6 +28,7 @@
   "dependencies": {
     "@accordproject/cicero-core": "^0.21.0",
     "@accordproject/markdown-cicero": "^0.12.0",
+    "@accordproject/markdown-docx": "^0.12.5-20200814124333",
     "@accordproject/ui-components": "^0.93.2-20200730175739",
     "prop-types": "^15.7.2",
     "react": "^16.8.2",
