@@ -1,3 +1,5 @@
+import titleGenerator from "./TitleGenerator";
+
 class VariableVisitor {
   static visitChildren(visitor, thing, parameters, result, field = 'nodes') {
     if(thing[field]) {
@@ -18,13 +20,19 @@ class VariableVisitor {
       if (Object.prototype.hasOwnProperty.call(parameters, variableName)) {
         parameters = {
           ...parameters,
-          [variableName]: ++parameters[variableName],
+          [variableName]: {
+            ...parameters[variableName],
+            count: ++parameters[variableName].count,
+          },
         };
       }
       else {
-        parameters[variableName] = 1;
+        parameters[variableName] = {
+          count: 1,
+          type: thing.elementType,
+        };
       }
-      result.push(`${variableName.toUpperCase()[0]}${variableName.substring(1)}${parameters[variableName]}`);
+      result.push(titleGenerator(`${variableName.toUpperCase()[0]}${variableName.substring(1)}${parameters[variableName].count}`, `${parameters[variableName].type}`));
     }
       break;
     default:

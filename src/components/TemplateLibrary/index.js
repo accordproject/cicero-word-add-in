@@ -7,6 +7,7 @@ import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
 import ooxmlGenerator from '../../utils/CiceroMarkToOOXML';
 import attachVariableChangeListener from '../../utils/AttachVariableChangeListener';
 import VariableVisitor from '../../utils/VariableVisitor';
+import titleGenerator from '../../utils/TitleGenerator';
 import spec from '../../constants/spec';
 
 const CUSTOM_XML_NAMESPACE = 'https://accordproject.org/';
@@ -117,8 +118,10 @@ const LibraryComponent = () => {
         ...counter,
       });
       for (const variableText in counter) {
-        for (let index=1; index<=counter[variableText]; ++index) {
-          attachVariableChangeListener(`${variableText.toUpperCase()[0]}${variableText.substring(1)}${index}`);
+        for (let index=1; index<=counter[variableText].count; ++index) {
+          attachVariableChangeListener(
+            titleGenerator(`${variableText.toUpperCase()[0]}${variableText.substring(1)}${index}`, counter[variableText].type)
+          );
         }
       }
     });
