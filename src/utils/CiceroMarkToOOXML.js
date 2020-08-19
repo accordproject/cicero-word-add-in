@@ -1,4 +1,5 @@
 import sanitizeHtmlChars from './SanitizeHtmlChars';
+import titleGenerator from './TitleGenerator';
 
 let globalOoxml;
 
@@ -55,7 +56,7 @@ const insertText = (value, emphasize=false) => {
   `;
 };
 
-const insertVariable = ( title, tag, value) => {
+const insertVariable = (title, tag, value, type) => {
   return `
     <w:sdt>
       <w:sdtPr>
@@ -64,7 +65,7 @@ const insertVariable = ( title, tag, value) => {
           <w:sz w:val="24"/>
           <w:highlight w:val="green"/>
         </w:rPr>
-        <w:alias w:val="${title}"/>
+        <w:alias w:val="${titleGenerator(title, type)}"/>
         <w:tag w:val="${tag}"/>
       </w:sdtPr>
       <w:sdtContent>
@@ -110,10 +111,12 @@ const getListItem = (node, text='') => {
     `;
   }
   if (node.$class === definedNodes.variable) {
+    const name = node.name;
+    const type = node.elementType;
     return `
       <w:sdt>
         <w:sdtPr>
-          <w:alias w:val="${node.name.toUpperCase()[0]}${node.name.substring(1)}"/>
+          <w:alias w:val="${titleGenerator(name.toUpperCase()[0]+name.substring(1), type)}"/>
           <w:tag w:val="${node.name}"/>
         </w:sdtPr>
         <w:sdtContent>
@@ -154,18 +157,25 @@ const definedNodes = {
 const getNodes = (node, counter, parent=null) => {
   if (node.$class === definedNodes.variable) {
     const tag = node.name;
+    const type = node.elementType;
     if (Object.prototype.hasOwnProperty.call(counter, tag)) {
       counter = {
         ...counter,
-        [tag]: ++counter[tag],
+        [tag]: {
+          ...counter[tag],
+          count: ++counter[tag].count,
+        },
       };
     }
     else {
-      counter[tag] = 1;
+      counter[tag] = {
+        count: 1,
+        type,
+      };
     }
     const value = node.value;
-    const title = `${tag.toUpperCase()[0]}${tag.substring(1)}${counter[tag]}`;
-    return insertVariable(title, tag, value);
+    const title = `${tag.toUpperCase()[0]}${tag.substring(1)}${counter[tag].count}`;
+    return insertVariable(title, tag, value, type);
   }
   if (node.$class === definedNodes.text) {
     if (parent !== null && parent.class === definedNodes.heading) {
