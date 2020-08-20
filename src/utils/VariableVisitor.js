@@ -1,4 +1,4 @@
-import titleGenerator from "./TitleGenerator";
+import titleGenerator from './TitleGenerator';
 
 class VariableVisitor {
   static visitChildren(visitor, thing, parameters, result, field = 'nodes') {

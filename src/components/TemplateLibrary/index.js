@@ -9,6 +9,7 @@ import attachVariableChangeListener from '../../utils/AttachVariableChangeListen
 import VariableVisitor from '../../utils/VariableVisitor';
 import titleGenerator from '../../utils/TitleGenerator';
 import spec from '../../constants/spec';
+import triggerClauseParse from '../../utils/TriggerClauseParse';
 
 const CUSTOM_XML_NAMESPACE = 'https://accordproject.org/';
 const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
@@ -51,8 +52,8 @@ const LibraryComponent = () => {
             customXmlPart.getNodesAsync('*/*', async result => {
               if (result.status === Office.AsyncResultStatus.Succeeded) {
                 for (let index=0; index<result.value.length; ++index) {
-                  const namespaceUri = result.value[index].namespaceUri;
-                  const templateIndex = templates[namespaceUri];
+                  const templateIdentifier = result.value[index].namespaceUri;
+                  const templateIndex = templates[templateIdentifier];
                   const template = await Template.fromUrl(templateIndex.ciceroUrl);
                   const ciceroMark = templateToCiceroMark(template);
                   const numeration = VariableVisitor.getVariables(ciceroMark);
@@ -65,6 +66,7 @@ const LibraryComponent = () => {
                         attachVariableChangeListener(contentControls.items[index].title);
                       }
                     }
+                    triggerClauseParse(templateIdentifier, template);
                   });
                 }
               }
@@ -78,10 +80,11 @@ const LibraryComponent = () => {
     }
   }, [templates]);
 
-  const setup = async (ciceroMark, templateIdentifier) => {
+  const setup = async (ciceroMark, template) => {
     await Word.run(async context => {
       let counter = { ...overallCounter };
       let ooxml = ooxmlGenerator(ciceroMark, counter, '');
+      const templateIdentifier = template.getIdentifier();
       ooxml = `
         <w:sdt>
           <w:sdtPr>
@@ -124,6 +127,7 @@ const LibraryComponent = () => {
           );
         }
       }
+      triggerClauseParse(templateIdentifier, template);
     });
   };
 
@@ -140,7 +144,7 @@ const LibraryComponent = () => {
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
     const ciceroMark = templateToCiceroMark(template);
     const templateIdentifier = template.getIdentifier();
-    setup(ciceroMark, templateIdentifier);
+    setup(ciceroMark, template);
     saveTemplateToXml(templateIdentifier);
   };
 
