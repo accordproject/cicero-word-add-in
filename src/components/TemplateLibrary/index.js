@@ -34,9 +34,8 @@ const LibraryComponent = () => {
     const fileUploaded = event.target.files[0];
     try {
       const template = await Template.fromArchive(fileUploaded);
-      const templateIdentifier = template.getIdentifier();
       const ciceroMark = templateToCiceroMark(template);
-      setup(ciceroMark, templateIdentifier);
+      setup(ciceroMark, template);
     }
     catch (error) {
       Office.context.ui.displayDialogAsync(`${window.location.origin}/bad-file.html`, { width: 30, height: 8 });
