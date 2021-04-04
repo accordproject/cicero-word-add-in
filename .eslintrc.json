@@ -16,7 +16,7 @@
       "jsx": true
     }
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:jsdoc/recommended"],
   "rules": {
     "arrow-parens": ["error", "as-needed"],
     "comma-dangle": ["error", "always-multiline"],
