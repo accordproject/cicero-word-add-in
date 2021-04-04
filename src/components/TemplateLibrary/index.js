@@ -19,6 +19,9 @@ const LibraryComponent = () => {
   const [overallCounter, setOverallCounter] = useState({});
 
   useEffect(() => {
+    /**
+     * Loading the template library and storing them in the state.
+     */
     async function load() {
       const templateLibrary = new TemplateLibrary();
       const templateIndex = await templateLibrary
@@ -30,6 +33,11 @@ const LibraryComponent = () => {
     load();
   }, []);
 
+  /**
+   * Upload a template locally
+   *
+   * @param {MouseEvent} event File upload
+   */
   const onUploadTemplate = async event => {
     const fileUploaded = event.target.files[0];
     try {
@@ -43,6 +51,9 @@ const LibraryComponent = () => {
   };
 
   useEffect(() => {
+    /**
+     * Initializing the document for the particular template with necssary uitlities whenver templates state changes
+     */
     async function initializeDocument() {
       Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
         if (result.status === Office.AsyncResultStatus.Succeeded) {
@@ -79,6 +90,13 @@ const LibraryComponent = () => {
     }
   }, [templates]);
 
+
+  /**
+   * Does the initial setup when the template is inserted.
+   *
+   * @param {object} ciceroMark Ciceromark JSON
+   * @param {object} template Template object
+   */
   const setup = async (ciceroMark, template) => {
     await Word.run(async context => {
       let counter = { ...overallCounter };
@@ -130,6 +148,12 @@ const LibraryComponent = () => {
     });
   };
 
+  /**
+   * Converts a template to ciceromark
+   *
+   * @param {object} template The template object
+   * @returns {object} Ciceromark of a template
+   */
   const templateToCiceroMark = template => {
     const sampleText = template.getMetadata().getSample();
     const clause = new Clause(template);
@@ -138,6 +162,11 @@ const LibraryComponent = () => {
     return ciceroMark;
   };
 
+  /**
+   * Loads the template text, setup it and save the template to xml
+   *
+   * @param {object} templateIndex Details of a particular template like url, author, displayName etc.
+   */
   const loadTemplateText = async templateIndex => {
     // URL to compiled archive
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
@@ -147,6 +176,11 @@ const LibraryComponent = () => {
     saveTemplateToXml(templateIdentifier);
   };
 
+  /**
+   * Save the template details to xml
+   *
+   * @param {string} templateIdentifier Identifier for a template
+   */
   const saveTemplateToXml = templateIdentifier => {
     Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
       if (result.status === Office.AsyncResultStatus.Succeeded) {
@@ -186,6 +220,11 @@ const LibraryComponent = () => {
     });
   };
 
+  /**
+   * Redirect to the template url
+   *
+   * @param {object} template Template Object
+   */
   const goToTemplateDetail = template => {
     const templateOrigin = new URL(template.url).origin;
     const { name, version } = template;

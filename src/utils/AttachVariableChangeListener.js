@@ -1,3 +1,8 @@
+/**
+ *
+ * @param {string} title
+ * Title of the variable
+ */
 const attachVariableChangeListener = title => {
   Office.context.document.bindings.addFromNamedItemAsync(title, Office.CoercionType.Text, { id: title }, res => {
     if (res.status === Office.AsyncResultStatus.Succeeded) {
@@ -18,6 +23,13 @@ const attachVariableChangeListener = title => {
   });
 };
 
+
+/**
+ * Change variables with same tag if one of the variable changes among them i.e. make all variables with same tag have similar value
+ *
+ * @param {Office.BindingDataChangedEventArgs} event
+ * Provides information about the binding that raised the DataChanged event.
+ */
 const variableChangeListener = event => {
   const { binding } = event;
   // ID of the binding the user changed

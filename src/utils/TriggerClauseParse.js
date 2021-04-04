@@ -2,6 +2,12 @@ import { CiceroMarkTransformer } from '@accordproject/markdown-cicero';
 import { Clause } from '@accordproject/cicero-core';
 import { OoxmlTransformer } from '@accordproject/markdown-docx';
 
+/**
+ * Parses the clause to check for inconsistencies
+ *
+ * @param {string} title Title of the template
+ * @param {object} template Template to be parsed
+ */
 const triggerClauseParse = (title, template) => {
   Office.context.document.bindings.addFromNamedItemAsync(title, Office.CoercionType.Text, { id: title }, res => {
     if (res.status === Office.AsyncResultStatus.Succeeded) {
@@ -22,6 +28,12 @@ const triggerClauseParse = (title, template) => {
   });
 };
 
+/**
+ * Checks if text inside a template is changed and parses it to ciceromark to check for consistency
+ *
+ * @param {Office.BindingDataChangedEventArgs} event Provides information about the binding that raised the DataChanged event.
+ * @param {object} template Template for which we are listening the change
+ */
 const textChangeListener = (event, template) => {
   const { binding } = event;
   binding.getDataAsync({ coercionType: Office.CoercionType.Ooxml }, result => {

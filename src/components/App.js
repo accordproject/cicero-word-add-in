@@ -20,6 +20,11 @@ const App = ({ isOfficeInitialized }) => {
     setActiveNav(name);
   };
 
+  /**
+   * Change the startup state of the add in
+   *
+   * @param {MouseEvent} event Mouseclick to see if checkbox is clicked
+   */
   const handleStartupState = event => {
     Office.context.document.settings.set('Office.AutoShowTaskpaneWithDocument', event.target.checked);
     setOpenOnStartup(event.target.checked);
