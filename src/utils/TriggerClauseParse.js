@@ -3,9 +3,9 @@ import { Clause } from '@accordproject/cicero-core';
 import { OoxmlTransformer } from '@accordproject/markdown-docx';
 
 /**
- * Parses the clause to check for inconsistencies
+ * Parses the clause to check for inconsistencies.
  *
- * @param {string} title Title of the template
+ * @param {string} title    Title of the template
  * @param {object} template Template to be parsed
  */
 const triggerClauseParse = (title, template) => {
@@ -29,10 +29,10 @@ const triggerClauseParse = (title, template) => {
 };
 
 /**
- * Checks if text inside a template is changed and parses it to ciceromark to check for consistency
+ * Checks if text inside a template is changed and parses it to CiceroMark JSON to check for consistency.
  *
- * @param {Office.BindingDataChangedEventArgs} event Provides information about the binding that raised the DataChanged event.
- * @param {object} template Template for which we are listening the change
+ * @param {Office.BindingDataChangedEventArgs} event Provides information about the binding that raised the DataChanged event
+ * @param {object} template                          Template for which we are listening the change
  */
 const textChangeListener = (event, template) => {
   const { binding } = event;

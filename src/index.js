@@ -5,9 +5,9 @@ import * as ReactDOM from 'react-dom';
 
 let isOfficeInitialized = false;
 /**
+ * Renders a react component.
  *
- * @param {React.ReactDOM} Component
- * Renders a react component
+ * @param {React.ReactDOM} Component React component to be rendered
  */
 const render = Component => {
   ReactDOM.render(

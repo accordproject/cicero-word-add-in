@@ -21,7 +21,7 @@ const App = ({ isOfficeInitialized }) => {
   };
 
   /**
-   * Change the startup state of the add in
+   * Set whether add-in should load by default on MS Word startup.
    *
    * @param {MouseEvent} event Mouseclick to see if checkbox is clicked
    */

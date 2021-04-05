@@ -1,5 +1,5 @@
 /**
- * Replaces the angular brackets with the respective codes
+ * Replaces the angular brackets with the respective codes.
  *
  * @param {string} node String to be replaced
  * @returns {string} String with replaced angular brackets

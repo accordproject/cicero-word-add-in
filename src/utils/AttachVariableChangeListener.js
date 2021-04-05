@@ -1,7 +1,7 @@
 /**
+ * Attaches listener to content controls so that similar instances of variables are updated simultaneously.
  *
- * @param {string} title
- * Title of the variable
+ * @param {string} title Title of the variable
  */
 const attachVariableChangeListener = title => {
   Office.context.document.bindings.addFromNamedItemAsync(title, Office.CoercionType.Text, { id: title }, res => {
@@ -25,10 +25,9 @@ const attachVariableChangeListener = title => {
 
 
 /**
- * Change variables with same tag if one of the variable changes among them i.e. make all variables with same tag have similar value
+ * Updates value of all the instance of variables with the same tags when one of them is manually modified.
  *
- * @param {Office.BindingDataChangedEventArgs} event
- * Provides information about the binding that raised the DataChanged event.
+ * @param {Office.BindingDataChangedEventArgs} event Provides information about the binding that raised the DataChanged event
  */
 const variableChangeListener = event => {
   const { binding } = event;

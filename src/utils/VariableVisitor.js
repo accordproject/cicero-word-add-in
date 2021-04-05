@@ -2,13 +2,13 @@ import titleGenerator from './TitleGenerator';
 
 class VariableVisitor {
   /**
-   * Visit the children
+   * Visit the children.
    *
-   * @param {Function} visitor visit the variable
-   * @param {object} thing ciceromark obbject of a template
-   * @param {object} parameters various functions for an object
-   * @param {Array} result result array
-   * @param {string} field Field name
+   * @param {Function} visitor    Visit the variable
+   * @param {object}   thing      CiceroMark object of a template
+   * @param {object}   parameters Various functions for an object
+   * @param {Array}    result     Result array
+   * @param {string}   field      Field name
    */
   static visitChildren(visitor, thing, parameters, result, field = 'nodes') {
     if(thing[field]) {

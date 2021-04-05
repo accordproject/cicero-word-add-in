@@ -3,12 +3,10 @@ import titleGenerator from './TitleGenerator';
 
 let globalOoxml;
 /**
- * Transforms the given heading node into OOXML heading
+ * Transforms the given heading node into OOXML heading.
  *
- * @param {string} value
- * Text to be rendered as heading
- * @param {number} level
- * Level of heading - ranges from 1 to 6.
+ * @param {string} value Text to be rendered as heading
+ * @param {number} level Level of heading - ranges from 1 to 6
  * @returns {string} OOXMl for heading
  *
  */
@@ -36,7 +34,7 @@ const insertHeading = (value, level) => {
 };
 
 /**
- * Insert a line break
+ * Inserts a line break.
  *
  * @returns {string} OOXML for linebreak
  */
@@ -45,7 +43,7 @@ const insertLineBreak = () => {
 };
 
 /**
- * Insert a soft break
+ * Inserts a soft break.
  *
  * @returns {string} OOXML for softbreak
  */
@@ -58,10 +56,10 @@ const insertSoftBreak = () => {
 };
 
 /**
- * Inserts text
+ * Inserts text.
  *
- * @param {string} value text to be rendered
- * @param {boolean} emphasize True=emphasized text, False=normal text
+ * @param {string}  value     Text to be rendered
+ * @param {boolean} emphasize true=emphasized text, false=normal text
  * @returns {string} OOXML for the text
  */
 const insertText = (value, emphasize=false) => {
@@ -83,12 +81,12 @@ const insertText = (value, emphasize=false) => {
 };
 
 /**
- * Inserts variable
+ * Inserts a variable.
  *
  * @param {string} title Title of the variable. Eg. receiver-1, shipper-1
- * @param {string} tag Name of the variable. Eg. receiver, shipper
+ * @param {string} tag   Name of the variable. Eg. receiver, shipper
  * @param {string} value Value of the variable
- * @param {string} type Type of the variable - Long, Double, etc.
+ * @param {string} type  Type of the variable - Long, Double, etc.
  * @returns {string} OOXML string for the variable
  */
 const insertVariable = (title, tag, value, type) => {
@@ -118,10 +116,10 @@ const insertVariable = (title, tag, value, type) => {
 };
 
 /**
- * Inserts list
+ * Inserts a list.
  *
- * @param {Array} node Array of nodes
- * @param {string} type Type of list- ordered or unordered
+ * @param {Array}  node Array of nodes
+ * @param {string} type Type of list - ordered or unordered
  * @returns {string} OOXML for list
  */
 const insertList = (node, type) => {
@@ -145,9 +143,9 @@ const insertList = (node, type) => {
 };
 
 /**
- * Get the particular list item
+ * Get the particular list item.
  *
- * @param {Array} node Array of nodes
+ * @param {Array}  node Array of nodes
  * @param {string} text Text to be rendered
  * @returns {string} OOXML for the list item
  */
@@ -204,11 +202,11 @@ const definedNodes = {
 };
 
 /**
- * Get the OOXMl for the given node
+ * Get the OOXMl for the given node.
  *
- * @param {object} node Object containing the description of node type
+ * @param {object} node    Object containing the description of node type
  * @param {object} counter Counter for different variables based on node name
- * @param {object} parent Parent object for a node
+ * @param {object} parent  Parent object for a node
  * @returns {string} OOXML for the given node
  */
 const getNodes = (node, counter, parent=null) => {
@@ -295,12 +293,12 @@ const getNodes = (node, counter, parent=null) => {
 };
 
 /**
- * Generates OOXML from ciceromark
+ * Generates OOXML from CiceroMark JSON.
  *
- * @param {Array} ciceroMark Ciceromark JSON
- * @param {object} counter Counter for different variables based on node name
- * @param {string} ooxml intial OOXML string
- * @returns {string} converted OOXML string i.e. Cicecomark->OOXML
+ * @param {Array}  ciceroMark Ciceromark JSON
+ * @param {object} counter    Counter for different variables based on node name
+ * @param {string} ooxml      Intial OOXML string
+ * @returns {string} Converted OOXML string i.e. CicecoMark->OOXML
  */
 const ooxmlGenerator = (ciceroMark, counter, ooxml) => {
   globalOoxml = ooxml;
