@@ -29,7 +29,16 @@
     "no-multi-spaces": "error",
     "no-trailing-spaces": "error",
     "quotes": ["error", "single"],
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "require-jsdoc": ["warn", {
+        "require": {
+          "FunctionDeclaration": true,
+          "MethodDefinition": true,
+          "ClassDeclaration": true,
+          "ArrowFunctionExpression": true,
+          "FunctionExpression": true
+        }
+    }]
   },
   "settings": {
     "react": {
