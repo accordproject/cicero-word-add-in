@@ -5,6 +5,12 @@ import { Menu } from 'semantic-ui-react';
 import TemplateLibrary from './TemplateLibrary';
 import './App.css';
 
+/**
+ * Returns the App component which is rendered.
+ *
+ * @param {boolean} isOfficeInitialized Checks whether office is intialized or not
+ * @returns {React.FC} React component
+ */
 const App = ({ isOfficeInitialized }) => {
   const [activeNav, setActiveNav] = useState('library');
   const [openOnStartup, setOpenOnStartup] = useState(false);
@@ -16,6 +22,13 @@ const App = ({ isOfficeInitialized }) => {
     }
   }, [isOfficeInitialized]);
 
+  /**
+   * Set the active nav item in the navbar
+   *
+   * @param {MouseEvent} event    Mouse click event
+   * @param {object}     obj      An object
+   * @param {string}     obj.name Name of the event
+   */
   const handleClick = (event, { name }) => {
     setActiveNav(name);
   };

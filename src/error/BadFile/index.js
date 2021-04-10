@@ -3,7 +3,11 @@ import * as ReactDOM from 'react-dom';
 import { Message } from 'semantic-ui-react';
 
 import './index.css';
-
+/**
+ * Renders a message when bad file is uploaded
+ *
+ * @returns {React.FC} Bad file component
+ */
 const BadFile = () => (
   <Message negative className="message-container">
     <Message.Header>Bad file uploaded</Message.Header>

@@ -1,5 +1,7 @@
 import titleGenerator from './TitleGenerator';
-
+/**
+ * Class to visit the variables using the ciceromark of a template.
+ */
 class VariableVisitor {
   /**
    * Visit the children.
@@ -16,12 +18,27 @@ class VariableVisitor {
     }
   }
 
+  /**
+   * Visit the nodes for fields other than Variable type.
+   *
+   * @param {string} visitor    Type of VariableVisitor
+   * @param {object} things     CiceroMark JSON for the field
+   * @param {object} parameters Counter for variables
+   * @param {Array}  result     Variable titles
+   */
   static visitNodes(visitor, things, parameters, result) {
     things.forEach(node => {
       visitor.visit(node, parameters, result);
     });
   }
 
+  /**
+   * Update the counters for variable fields and visit the sub fields for other types.
+   *
+   * @param {object} thing      CiceroMark JSON of template
+   * @param {object} parameters Count of different variables
+   * @param {Array}  result     Variable Titles
+   */
   static visit(thing, parameters, result) {
     switch(thing.$class) {
     case 'org.accordproject.ciceromark.Variable': {
@@ -49,6 +66,12 @@ class VariableVisitor {
     }
   }
 
+  /**
+   * Visits the variables present in CiceroMark JSON and returns array of variable fields.
+   *
+   * @param {object} input CiceroMark JSON of a template
+   * @returns {Array} Variable fields for the JSON
+   */
   static getVariables(input) {
     const parameters = {};
     const result = [];

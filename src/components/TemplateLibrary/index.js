@@ -14,13 +14,18 @@ import triggerClauseParse from '../../utils/TriggerClauseParse';
 const CUSTOM_XML_NAMESPACE = 'https://accordproject.org/';
 const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
 
+/**
+ * Template library Renderer.
+ *
+ * @returns {React.FC} Template library
+ */
 const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
   const [overallCounter, setOverallCounter] = useState({});
 
   useEffect(() => {
     /**
-     * Loading the template library from https://templates.accordproject.org/ and storing them in the state.
+     * Loads the template library from https://templates.accordproject.org/ and storing them in the state.
      */
     async function load() {
       const templateLibrary = new TemplateLibrary();
@@ -34,7 +39,7 @@ const LibraryComponent = () => {
   }, []);
 
   /**
-   * Render a uploaded template.
+   * Renders an uploaded template.
    *
    * @param {MouseEvent} event event containing the file object
    */
