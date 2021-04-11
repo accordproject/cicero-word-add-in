@@ -14,11 +14,19 @@ import triggerClauseParse from '../../utils/TriggerClauseParse';
 const CUSTOM_XML_NAMESPACE = 'https://accordproject.org/';
 const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
 
+/**
+ * Template library Renderer.
+ *
+ * @returns {React.FC} Template library
+ */
 const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
   const [overallCounter, setOverallCounter] = useState({});
 
   useEffect(() => {
+    /**
+     * Loads the template library from https://templates.accordproject.org/ and stores them in the state.
+     */
     async function load() {
       const templateLibrary = new TemplateLibrary();
       const templateIndex = await templateLibrary
@@ -30,6 +38,11 @@ const LibraryComponent = () => {
     load();
   }, []);
 
+  /**
+   * Renders an uploaded template.
+   *
+   * @param {MouseEvent} event event containing the file object
+   */
   const onUploadTemplate = async event => {
     const fileUploaded = event.target.files[0];
     try {
@@ -43,6 +56,9 @@ const LibraryComponent = () => {
   };
 
   useEffect(() => {
+    /**
+     * Initializes the document by fetching the templates whose identifier is stored in CustomXMLPart.
+     */
     async function initializeDocument() {
       Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
         if (result.status === Office.AsyncResultStatus.Succeeded) {
@@ -79,6 +95,13 @@ const LibraryComponent = () => {
     }
   }, [templates]);
 
+
+  /**
+   * Sets up a template for rendering.
+   *
+   * @param {object} ciceroMark Ciceromark JSON
+   * @param {object} template   Template object
+   */
   const setup = async (ciceroMark, template) => {
     await Word.run(async context => {
       let counter = { ...overallCounter };
@@ -130,6 +153,12 @@ const LibraryComponent = () => {
     });
   };
 
+  /**
+   * Converts a template text to CiceroMark JSON.
+   *
+   * @param {object} template The template object
+   * @returns {object} CiceroMark JSON of a template
+   */
   const templateToCiceroMark = template => {
     const sampleText = template.getMetadata().getSample();
     const clause = new Clause(template);
@@ -138,6 +167,11 @@ const LibraryComponent = () => {
     return ciceroMark;
   };
 
+  /**
+   * Fetches templateIndex from https://templates.accordproject.org/, load the template, and save template details to CustomXML.
+   *
+   * @param {object} templateIndex Details of a particular template like URL, author, displayName, etc.
+   */
   const loadTemplateText = async templateIndex => {
     // URL to compiled archive
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
@@ -147,6 +181,11 @@ const LibraryComponent = () => {
     saveTemplateToXml(templateIdentifier);
   };
 
+  /**
+   * Saves the template details to CustomXML.
+   *
+   * @param {string} templateIdentifier Identifier for a template
+   */
   const saveTemplateToXml = templateIdentifier => {
     Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
       if (result.status === Office.AsyncResultStatus.Succeeded) {
@@ -186,6 +225,11 @@ const LibraryComponent = () => {
     });
   };
 
+  /**
+   * Redirects to the template URL.
+   *
+   * @param {object} template Template object
+   */
   const goToTemplateDetail = template => {
     const templateOrigin = new URL(template.url).origin;
     const { name, version } = template;

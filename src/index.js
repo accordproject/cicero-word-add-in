@@ -4,7 +4,11 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 let isOfficeInitialized = false;
-
+/**
+ * Renders a react component.
+ *
+ * @param {React.ReactDOM} Component React component to be rendered
+ */
 const render = Component => {
   ReactDOM.render(
     <AppContainer>
@@ -14,7 +18,7 @@ const render = Component => {
   );
 };
 
-/* Render application after Office initializes */
+/* Renders application after Office initializes */
 Office.initialize = () => {
   isOfficeInitialized = true;
   render(App);

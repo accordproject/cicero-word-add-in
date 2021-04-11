@@ -2,7 +2,14 @@ import sanitizeHtmlChars from './SanitizeHtmlChars';
 import titleGenerator from './TitleGenerator';
 
 let globalOoxml;
-
+/**
+ * Transforms the given heading node into OOXML heading.
+ *
+ * @param {string} value Text to be rendered as heading
+ * @param {number} level Level of heading - ranges from 1 to 6
+ * @returns {string} OOXMl for heading
+ *
+ */
 const insertHeading = (value, level) => {
   const definedLevels = {
     1: { style: Word.Style.heading1, size: 25 },
@@ -26,10 +33,20 @@ const insertHeading = (value, level) => {
   `;
 };
 
+/**
+ * Inserts a line break.
+ *
+ * @returns {string} OOXML for linebreak
+ */
 const insertLineBreak = () => {
   return '<w:p />';
 };
 
+/**
+ * Inserts a soft break.
+ *
+ * @returns {string} OOXML for softbreak
+ */
 const insertSoftBreak = () => {
   return `
     <w:r>
@@ -38,6 +55,13 @@ const insertSoftBreak = () => {
   `;
 };
 
+/**
+ * Inserts text.
+ *
+ * @param {string}  value     Text to be rendered
+ * @param {boolean} emphasize true=emphasized text, false=normal text
+ * @returns {string} OOXML for the text
+ */
 const insertText = (value, emphasize=false) => {
   if (emphasize) {
     return `
@@ -56,6 +80,15 @@ const insertText = (value, emphasize=false) => {
   `;
 };
 
+/**
+ * Inserts a variable.
+ *
+ * @param {string} title Title of the variable. Eg. receiver-1, shipper-1
+ * @param {string} tag   Name of the variable. Eg. receiver, shipper
+ * @param {string} value Value of the variable
+ * @param {string} type  Type of the variable - Long, Double, etc.
+ * @returns {string} OOXML string for the variable
+ */
 const insertVariable = (title, tag, value, type) => {
   return `
     <w:sdt>
@@ -82,6 +115,13 @@ const insertVariable = (title, tag, value, type) => {
   `;
 };
 
+/**
+ * Inserts a list.
+ *
+ * @param {Array}  node Array of nodes
+ * @param {string} type Type of list - ordered or unordered
+ * @returns {string} OOXML for list
+ */
 const insertList = (node, type) => {
   let ooxml = '';
   node.nodes.forEach(subNode => {
@@ -102,6 +142,13 @@ const insertList = (node, type) => {
   return ooxml;
 };
 
+/**
+ * Gets the particular list item.
+ *
+ * @param {Array}  node Array of nodes
+ * @param {string} text Text to be rendered
+ * @returns {string} OOXML for the list item
+ */
 const getListItem = (node, text='') => {
   if (node.$class === definedNodes.text) {
     return `
@@ -154,6 +201,14 @@ const definedNodes = {
   emphasize: 'org.accordproject.commonmark.Emph',
 };
 
+/**
+ * Gets the OOXML for the given node.
+ *
+ * @param {object} node    Description of node type
+ * @param {object} counter Counter for different variables based on node name
+ * @param {object} parent  Parent object for a node
+ * @returns {string} OOXML for the given node
+ */
 const getNodes = (node, counter, parent=null) => {
   if (node.$class === definedNodes.variable) {
     const tag = node.name;
@@ -237,6 +292,14 @@ const getNodes = (node, counter, parent=null) => {
   return '';
 };
 
+/**
+ * Generates OOXML from CiceroMark JSON.
+ *
+ * @param {Array}  ciceroMark Ciceromark JSON
+ * @param {object} counter    Counter for different variables based on node name
+ * @param {string} ooxml      Intial OOXML string
+ * @returns {string} Converted OOXML string i.e. CicecoMark->OOXML
+ */
 const ooxmlGenerator = (ciceroMark, counter, ooxml) => {
   globalOoxml = ooxml;
   ciceroMark.nodes.forEach(node => {
