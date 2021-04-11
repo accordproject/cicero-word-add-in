@@ -143,7 +143,7 @@ const insertList = (node, type) => {
 };
 
 /**
- * Get the particular list item.
+ * Gets the particular list item.
  *
  * @param {Array}  node Array of nodes
  * @param {string} text Text to be rendered
@@ -202,9 +202,9 @@ const definedNodes = {
 };
 
 /**
- * Get the OOXMl for the given node.
+ * Gets the OOXML for the given node.
  *
- * @param {object} node    Object containing the description of node type
+ * @param {object} node    Description of node type
  * @param {object} counter Counter for different variables based on node name
  * @param {object} parent  Parent object for a node
  * @returns {string} OOXML for the given node

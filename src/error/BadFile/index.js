@@ -4,7 +4,7 @@ import { Message } from 'semantic-ui-react';
 
 import './index.css';
 /**
- * Renders a message when bad file is uploaded
+ * Renders a message when a bad file is uploaded.
  *
  * @returns {React.FC} Bad file component
  */

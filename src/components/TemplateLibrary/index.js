@@ -25,7 +25,7 @@ const LibraryComponent = () => {
 
   useEffect(() => {
     /**
-     * Loads the template library from https://templates.accordproject.org/ and storing them in the state.
+     * Loads the template library from https://templates.accordproject.org/ and stores them in the state.
      */
     async function load() {
       const templateLibrary = new TemplateLibrary();
@@ -57,7 +57,7 @@ const LibraryComponent = () => {
 
   useEffect(() => {
     /**
-     * Initialize the document by fetching the templates whose identifier is stored in CustomXMLPart.
+     * Initializes the document by fetching the templates whose identifier is stored in CustomXMLPart.
      */
     async function initializeDocument() {
       Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
@@ -182,7 +182,7 @@ const LibraryComponent = () => {
   };
 
   /**
-   * Save the template details to CustomXML.
+   * Saves the template details to CustomXML.
    *
    * @param {string} templateIdentifier Identifier for a template
    */
@@ -226,7 +226,7 @@ const LibraryComponent = () => {
   };
 
   /**
-   * Redirect to the template URL.
+   * Redirects to the template URL.
    *
    * @param {object} template Template object
    */

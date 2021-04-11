@@ -1,10 +1,10 @@
 import titleGenerator from './TitleGenerator';
 /**
- * Class to visit the variables using the ciceromark of a template.
+ * Class to visit the variables using the CiceroMark JSON of a template.
  */
 class VariableVisitor {
   /**
-   * Visit the children.
+   * Visits the children.
    *
    * @param {Function} visitor    Visit the variable
    * @param {object}   thing      CiceroMark object of a template
@@ -19,7 +19,7 @@ class VariableVisitor {
   }
 
   /**
-   * Visit the nodes for fields other than Variable type.
+   * Visits the nodes for fields other than Variable type.
    *
    * @param {string} visitor    Type of VariableVisitor
    * @param {object} things     CiceroMark JSON for the field
@@ -33,7 +33,7 @@ class VariableVisitor {
   }
 
   /**
-   * Update the counters for variable fields and visit the sub fields for other types.
+   * Updates the counter for variable fields and visits the sub fields for other types.
    *
    * @param {object} thing      CiceroMark JSON of template
    * @param {object} parameters Count of different variables

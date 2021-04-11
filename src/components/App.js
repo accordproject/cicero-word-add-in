@@ -23,7 +23,7 @@ const App = ({ isOfficeInitialized }) => {
   }, [isOfficeInitialized]);
 
   /**
-   * Set the active nav item in the navbar
+   * Sets the active nav item in the navbar.
    *
    * @param {MouseEvent} event    Mouse click event
    * @param {object}     obj      An object
@@ -34,7 +34,7 @@ const App = ({ isOfficeInitialized }) => {
   };
 
   /**
-   * Set whether add-in should load by default on MS Word startup.
+   * Sets whether add-in should load by default on MS Word startup.
    *
    * @param {MouseEvent} event Mouseclick to see if checkbox is clicked
    */
