@@ -177,48 +177,21 @@ const LibraryComponent = () => {
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
     const ciceroMark = templateToCiceroMark(template);
     const templateIdentifier = template.getIdentifier();
+    saveTemplateToXml(ciceroMark, template, templateIdentifier);
+  };
+
+  /**
+   * Sets up the template for rendering and saves it to the XML if the identifier of template is unique.
+   *
+   * @param {object} ciceroMark         CiceroMark JSON of a template
+   * @param {object} template           Template object
+   * @param {string} templateIdentifier Identifier for a template
+   */
+  const saveTemplateToXml = (ciceroMark, template, templateIdentifier) => {
     Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
       if (result.status === Office.AsyncResultStatus.Succeeded) {
         if (result.value.length === 0) {
           setup(ciceroMark, template);
-          saveTemplateToXml(templateIdentifier);
-        }
-        else {
-          const customXmlPart = result.value[0];
-          customXmlPart.getNodesAsync('*/*', result => {
-            if (result.status === Office.AsyncResultStatus.Succeeded) {
-              let f=1;
-              if (result.value.length > 0) {
-                for (let node=0; node < result.value.length; ++node) {
-                  if (result.value[node].namespaceUri === templateIdentifier) {
-                    f=0;
-                  }
-                }
-              }
-              if(f){
-                setup(ciceroMark, template);
-                saveTemplateToXml(templateIdentifier);
-              }else{
-                console.info('Already present template');
-                // Office.context.ui.displayDialogAsync(`${window.location.origin}/bad-file.html`, { width: 30, height: 8 });
-                // Currently we are logging the info on console. However we can use the above thing to display that a template is already present to the user.
-              }
-            }
-          });
-        }
-      }
-    });
-  };
-
-  /**
-   * Saves the template details to CustomXML.
-   *
-   * @param {string} templateIdentifier Identifier for a template
-   */
-  const saveTemplateToXml = templateIdentifier => {
-    Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
-      if (result.status === Office.AsyncResultStatus.Succeeded) {
-        if (result.value.length === 0) {
           const xml = XML_HEADER +
           `<templates xmlns="${CUSTOM_XML_NAMESPACE}">` +
             `<template xmlns="${templateIdentifier}" />` +
@@ -229,24 +202,35 @@ const LibraryComponent = () => {
           const customXmlPart = result.value[0];
           customXmlPart.getNodesAsync('*/*', result => {
             if (result.status === Office.AsyncResultStatus.Succeeded) {
+              let identifierExists = false;
               let newXml = XML_HEADER + `<templates xmlns="${CUSTOM_XML_NAMESPACE}">`;
               if (result.value.length > 0) {
                 for (let node=0; node < result.value.length; ++node) {
                   if (result.value[node].namespaceUri !== templateIdentifier) {
                     newXml += `<template xmlns="${result.value[node].namespaceUri}" />`;
                   }
-                }
-              }
-              newXml += `<template xmlns="${templateIdentifier}" />`;
-              newXml += '</templates>';
-              Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, res => {
-                if (res.status === Office.AsyncResultStatus.Succeeded) {
-                  for (let index=0; index<res.value.length; ++index) {
-                    res.value[index].deleteAsync();
+                  if(result.value[node].namespaceUri === templateIdentifier){
+                    identifierExists = true;
                   }
                 }
-              });
-              Office.context.document.customXmlParts.addAsync(newXml);
+              }
+              if(!identifierExists){
+                setup(ciceroMark, template);
+                newXml += `<template xmlns="${templateIdentifier}" />`;
+                newXml += '</templates>';
+                Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, res => {
+                  if (res.status === Office.AsyncResultStatus.Succeeded) {
+                    for (let index=0; index<res.value.length; ++index) {
+                      res.value[index].deleteAsync();
+                    }
+                  }
+                });
+                Office.context.document.customXmlParts.addAsync(newXml);
+              }else{
+                console.info('Already present template');
+                // Office.context.ui.displayDialogAsync(`${window.location.origin}/bad-file.html`, { width: 30, height: 8 });
+                // Currently we are logging the info on console. However we can use the above thing to display that a template is already present to the user.
+              }
             }
           });
         }
