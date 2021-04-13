@@ -177,8 +177,37 @@ const LibraryComponent = () => {
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
     const ciceroMark = templateToCiceroMark(template);
     const templateIdentifier = template.getIdentifier();
-    setup(ciceroMark, template);
-    saveTemplateToXml(templateIdentifier);
+    Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        if (result.value.length === 0) {
+          setup(ciceroMark, template);
+          saveTemplateToXml(templateIdentifier);
+        }
+        else {
+          const customXmlPart = result.value[0];
+          customXmlPart.getNodesAsync('*/*', result => {
+            if (result.status === Office.AsyncResultStatus.Succeeded) {
+              let f=1;
+              if (result.value.length > 0) {
+                for (let node=0; node < result.value.length; ++node) {
+                  if (result.value[node].namespaceUri === templateIdentifier) {
+                    f=0;
+                  }
+                }
+              }
+              if(f){
+                setup(ciceroMark, template);
+                saveTemplateToXml(templateIdentifier);
+              }else{
+                console.info('Already present template');
+                // Office.context.ui.displayDialogAsync(`${window.location.origin}/bad-file.html`, { width: 30, height: 8 });
+                // Currently we are logging the info on console. However we can use the above thing to display that a template is already present to the user.
+              }
+            }
+          });
+        }
+      }
+    });
   };
 
   /**
