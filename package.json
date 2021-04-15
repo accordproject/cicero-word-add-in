@@ -16,7 +16,7 @@
     "build:dev": "webpack --mode development --https false",
     "build-dev": "webpack --mode development --https false && echo . && echo . && echo . && echo Please use 'build:dev' instead of 'build-dev'.",
     "dev-server": "webpack-dev-server --mode development",
-    "lint": "eslint '**/*.{js,jsx}'",
+    "lint": "eslint **/*.{js,jsx}",
     "lint:fix": "eslint '**/*.{js,jsx}' --fix",
     "start": "office-addin-debugging start manifest.xml",
     "start:desktop": "office-addin-debugging start manifest.xml desktop",
@@ -33,6 +33,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.2",
     "react-dom": "^16.10.2",
+    "react-toast-notifications": "^2.4.3",
     "semantic-ui-react": "^0.88.2",
     "styled-components": "^5.1.1"
   },

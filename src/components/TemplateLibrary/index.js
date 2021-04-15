@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Loader } from 'semantic-ui-react';
+import { useToasts } from 'react-toast-notifications';
+
 
 import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
@@ -22,6 +24,8 @@ const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
 const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
   const [overallCounter, setOverallCounter] = useState({});
+  const { addToast } = useToasts();
+
 
   useEffect(() => {
     /**
@@ -227,9 +231,7 @@ const LibraryComponent = () => {
                 });
                 Office.context.document.customXmlParts.addAsync(newXml);
               }else{
-                console.info('Already present template');
-                // Office.context.ui.displayDialogAsync(`${window.location.origin}/bad-file.html`, { width: 30, height: 8 });
-                // Currently we are logging the info on console. However we can use the above thing to display that a template is already present to the user.
+                addToast('Template cannot be inserted as it is already present in the document.', { appearance: 'error' });
               }
             }
           });
