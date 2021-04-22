@@ -13,7 +13,7 @@ class VariableVisitor {
    * @param {string}   field      Field name
    */
   static visitChildren(visitor, thing, parameters, result, field = 'nodes') {
-    if(thing[field]) {
+    if (thing[field]) {
       VariableVisitor.visitNodes(visitor, thing[field], parameters, result);
     }
   }
@@ -40,7 +40,7 @@ class VariableVisitor {
    * @param {Array}  result     Variable Titles
    */
   static visit(thing, parameters, result) {
-    switch(thing.$class) {
+    switch (thing.$class) {
     case 'org.accordproject.ciceromark.Variable': {
       const variableName = thing.name;
       if (Object.prototype.hasOwnProperty.call(parameters, variableName)) {

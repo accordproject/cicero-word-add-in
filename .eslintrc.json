@@ -39,8 +39,8 @@
           "FunctionExpression": true
         }
     }],
-    "space-before-blocks":["error", "always"],
-    "keyword-spacing": ["error", {"after":true}]
+    "space-before-blocks": ["error", "always"],
+    "keyword-spacing": ["error", { "after": true }]
   },
   "settings": {
     "react": {
