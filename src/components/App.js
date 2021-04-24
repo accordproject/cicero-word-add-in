@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Menu } from 'semantic-ui-react';
-import { ToastProvider } from 'react-toast-notifications';
+import { SemanticToastContainer } from 'react-semantic-toasts';
+import 'react-semantic-toasts/styles/react-semantic-alert.css';
 
 import TemplateLibrary from './TemplateLibrary';
 import './App.css';
@@ -57,7 +58,8 @@ const App = ({ isOfficeInitialized }) => {
   }
 
   return (
-    <ToastProvider autoDismiss={true}>
+    <React.Fragment>
+      <SemanticToastContainer position="top-center" />
       <Menu widths={navItems.length}>
         {navItems.map((item, index) => (
           <Menu.Item
@@ -80,7 +82,7 @@ const App = ({ isOfficeInitialized }) => {
           <input type="checkbox" checked={openOnStartup} onChange={handleStartupState}></input>
         </label>
       </footer>
-    </ToastProvider>
+    </React.Fragment>
   );
 };
 

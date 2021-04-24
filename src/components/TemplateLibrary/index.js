@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Loader } from 'semantic-ui-react';
-import { useToasts } from 'react-toast-notifications';
-
+import { toast } from 'react-semantic-toasts';
 
 import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
@@ -24,8 +23,6 @@ const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
 const LibraryComponent = () => {
   const [templates, setTemplates] = useState(null);
   const [overallCounter, setOverallCounter] = useState({});
-  const { addToast } = useToasts();
-
 
   useEffect(() => {
     /**
@@ -231,7 +228,18 @@ const LibraryComponent = () => {
                 });
                 Office.context.document.customXmlParts.addAsync(newXml);
               }else{
-                addToast('Template cannot be inserted as it is already present in the document.', { appearance: 'error' });
+                toast(
+                  {
+                    title: 'Duplicate template',
+                    description: <p>Template cannot be inserted as it is already present in the document.</p>,
+                    type: 'error',
+                    time: 5000,
+                    animation: 'fly down',
+                  },
+                  () => console.log('toast closed'),
+                  () => console.log('toast clicked'),
+                  () => console.log('toast dismissed')
+                );
               }
             }
           });
