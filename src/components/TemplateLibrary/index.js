@@ -256,7 +256,7 @@ const LibraryComponent = () => {
     window.open(`${templateOrigin}/${name}@${version}.html`, '_blank');
   };
 
-  if(!templates){
+  if (!templates) {
     return <Loader active>Loading</Loader>;
   }
 
