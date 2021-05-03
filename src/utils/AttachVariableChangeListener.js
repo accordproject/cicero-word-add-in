@@ -47,7 +47,7 @@ const variableChangeListener = event => {
       await context.sync();
       // To prevent it from an infinite loop, we check if text inside all the variables is same or not.
       let contentControlText = [];
-      for(let index=0; index<contentControls.items.length; ++index) {
+      for (let index=0; index<contentControls.items.length; ++index) {
         let textRange = contentControls.items[index].getRange();
         textRange.load('text');
         await context.sync();
@@ -56,7 +56,7 @@ const variableChangeListener = event => {
       if (contentControlText.every(el => el === contentControlText[0])) {
         return;
       }
-      for(let index=0; index<contentControls.items.length; ++index) {
+      for (let index=0; index<contentControls.items.length; ++index) {
         contentControls.items[index].insertText(data, Word.InsertLocation.replace);
       }
       return context.sync();
