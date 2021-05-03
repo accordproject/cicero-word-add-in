@@ -210,7 +210,7 @@ const LibraryComponent = () => {
                   if (result.value[node].namespaceUri !== templateIdentifier) {
                     newXml += `<template xmlns="${result.value[node].namespaceUri}" />`;
                   }
-                  if(result.value[node].namespaceUri === templateIdentifier){
+                  else {
                     identifierExists = true;
                   }
                 }
@@ -236,9 +236,6 @@ const LibraryComponent = () => {
                     time: 5000,
                     animation: 'fly down',
                   },
-                  () => console.log('toast closed'),
-                  () => console.log('toast clicked'),
-                  () => console.log('toast dismissed')
                 );
               }
             }
