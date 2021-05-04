@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Loader } from 'semantic-ui-react';
+import { toast } from 'react-semantic-toasts';
 
 import { Library as TemplateLibraryRenderer } from '@accordproject/ui-components';
 import { TemplateLibrary, Template, Clause } from '@accordproject/cicero-core';
@@ -177,19 +178,21 @@ const LibraryComponent = () => {
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
     const ciceroMark = templateToCiceroMark(template);
     const templateIdentifier = template.getIdentifier();
-    setup(ciceroMark, template);
-    saveTemplateToXml(templateIdentifier);
+    saveTemplateToXml(ciceroMark, template, templateIdentifier);
   };
 
   /**
-   * Saves the template details to CustomXML.
+   * Sets up the template for rendering and saves it to the XML if the identifier of template is unique.
    *
+   * @param {object} ciceroMark         CiceroMark JSON of a template
+   * @param {object} template           Template object
    * @param {string} templateIdentifier Identifier for a template
    */
-  const saveTemplateToXml = templateIdentifier => {
+  const saveTemplateToXml = (ciceroMark, template, templateIdentifier) => {
     Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
       if (result.status === Office.AsyncResultStatus.Succeeded) {
         if (result.value.length === 0) {
+          setup(ciceroMark, template);
           const xml = XML_HEADER +
           `<templates xmlns="${CUSTOM_XML_NAMESPACE}">` +
             `<template xmlns="${templateIdentifier}" />` +
@@ -200,24 +203,41 @@ const LibraryComponent = () => {
           const customXmlPart = result.value[0];
           customXmlPart.getNodesAsync('*/*', result => {
             if (result.status === Office.AsyncResultStatus.Succeeded) {
+              let identifierExists = false;
               let newXml = XML_HEADER + `<templates xmlns="${CUSTOM_XML_NAMESPACE}">`;
               if (result.value.length > 0) {
                 for (let node=0; node < result.value.length; ++node) {
                   if (result.value[node].namespaceUri !== templateIdentifier) {
                     newXml += `<template xmlns="${result.value[node].namespaceUri}" />`;
                   }
-                }
-              }
-              newXml += `<template xmlns="${templateIdentifier}" />`;
-              newXml += '</templates>';
-              Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, res => {
-                if (res.status === Office.AsyncResultStatus.Succeeded) {
-                  for (let index=0; index<res.value.length; ++index) {
-                    res.value[index].deleteAsync();
+                  else {
+                    identifierExists = true;
                   }
                 }
-              });
-              Office.context.document.customXmlParts.addAsync(newXml);
+              }
+              if(!identifierExists){
+                setup(ciceroMark, template);
+                newXml += `<template xmlns="${templateIdentifier}" />`;
+                newXml += '</templates>';
+                Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, res => {
+                  if (res.status === Office.AsyncResultStatus.Succeeded) {
+                    for (let index=0; index<res.value.length; ++index) {
+                      res.value[index].deleteAsync();
+                    }
+                  }
+                });
+                Office.context.document.customXmlParts.addAsync(newXml);
+              }else{
+                toast(
+                  {
+                    title: 'Duplicate template',
+                    description: <p>Template cannot be inserted as it is already present in the document.</p>,
+                    type: 'error',
+                    time: 5000,
+                    animation: 'fly down',
+                  },
+                );
+              }
             }
           });
         }
