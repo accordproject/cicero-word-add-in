@@ -22,39 +22,30 @@ environment.
     $ git clone https://github.com/accordproject/cicero-word-add-in.git
     ```
 
-2. Install dependencies of the project.
-    ```bash
-    npm i
-    ```
-
-3. After installing the depedencies, run
+2. Setup the project by running the command 
    ```bash
-    npm run prepare
+    npm run setup
    ```
-   The above command will setup the pre-commit hooks in the project.
-
-   Alternatively, one can also run the command 
-   ```bash
-      npm run setup
-   ```
-   It is a combination of **step 2 and 3**.
    It will install the dependencies and set up the project hooks.
 
-4. Firing up the server diverge a little depending upon the OS you're using.
+   Alternatively, one can also use `npm i` to install the depedencies and `npm run prepare`
+   to setup the project hooks.
+
+3. Firing up the server diverge a little depending upon the OS you're using.
     1. **On Windows:** Run `npm start` and it will start the server and
        automatically sideload the the add-in on the desktop version of MS Word.
     2. **On MacOSX:** Run `npm run dev-server` for starting the server and run
      `npm start` to sideload the add-in.
 
-5. To test your add-in on the web, run `npm run start:web` and this will start
+4. To test your add-in on the web, run `npm run start:web` and this will start
    the server. You can then sideload the add-in on the web version of MS Word
    by following the steps given [here](https://docs.microsoft.com/en-us/office/dev/add-ins/testing/sideload-office-add-ins-for-testing#sideload-an-office-add-in-in-office-on-the-web).
 
-6. Once the add-in is successfully loaded, the icon for add-in will be displayed
+5. Once the add-in is successfully loaded, the icon for add-in will be displayed
    on the **Home** tab. Go there and click the button with name
    "Cicero Word Add-in".
 
-7. For more information on setting up Word add-in for development, follow this
+6. For more information on setting up Word add-in for development, follow this
    [documentation](https://docs.microsoft.com/en-us/office/dev/add-ins/quickstarts/word-quickstart).
 
 #### Debugging Add-in
