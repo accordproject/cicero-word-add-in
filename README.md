@@ -22,10 +22,14 @@ environment.
     $ git clone https://github.com/accordproject/cicero-word-add-in.git
     ```
 
-2. Install dependencies of the project.
-    ```bash
-    npm i
-    ```
+2. Setup the project by running the command 
+   ```bash
+    npm run setup
+   ```
+   It will install the dependencies and set up the git hooks.
+
+   Alternatively, one can also use `npm i` to install the depedencies and `npm run prepare`
+   to setup the git hooks.
 
 3. Firing up the server diverge a little depending upon the OS you're using.
     1. **On Windows:** Run `npm start` and it will start the server and
