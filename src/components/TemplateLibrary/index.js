@@ -108,17 +108,6 @@ const LibraryComponent = () => {
       let counter = { ...overallCounter };
       let ooxml = ooxmlGenerator(ciceroMark, counter, '');
       const templateIdentifier = template.getIdentifier();
-      ooxml = `
-        <w:sdt>
-          <w:sdtPr>
-            <w:lock w:val="contentLocked" />
-            <w:alias w:val="${templateIdentifier}"/>
-          </w:sdtPr>
-          <w:sdtContent>
-          ${ooxml}
-          </w:sdtContent>
-        </w:sdt>
-      `;
       ooxml = `<pkg:package xmlns:pkg="http://schemas.microsoft.com/office/2006/xmlPackage">
       <pkg:part pkg:name="/_rels/.rels" pkg:contentType="application/vnd.openxmlformats-package.relationships+xml">
         <pkg:xmlData>
@@ -137,7 +126,10 @@ const LibraryComponent = () => {
       </pkg:part>
       ${spec}
       </pkg:package>`;
-      context.document.body.insertOoxml(ooxml, Word.InsertLocation.end);
+      const range = context.document.body.insertOoxml(ooxml, Word.InsertLocation.end);
+      const control = range.insertContentControl();
+      control.title = templateIdentifier;
+      control.cannotEdit = true;
       await context.sync();
       setOverallCounter({
         ...overallCounter,
@@ -215,7 +207,7 @@ const LibraryComponent = () => {
                   }
                 }
               }
-              if(!identifierExists){
+              if (!identifierExists) {
                 setup(ciceroMark, template);
                 newXml += `<template xmlns="${templateIdentifier}" />`;
                 newXml += '</templates>';
@@ -227,7 +219,7 @@ const LibraryComponent = () => {
                   }
                 });
                 Office.context.document.customXmlParts.addAsync(newXml);
-              }else{
+              } else {
                 toast(
                   {
                     title: 'Duplicate template',
