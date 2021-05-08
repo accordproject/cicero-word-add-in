@@ -1,5 +1,5 @@
 /**
- * Removes the unnecessary quotation marks in the string
+ * Strips off the quotation marks from the first and last position.
  *
  * @param {*} value Value to sanitize.
  * @returns {string} Sanitized Value after replacing quotation marks
