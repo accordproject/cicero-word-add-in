@@ -127,9 +127,9 @@ const LibraryComponent = () => {
       ${spec}
       </pkg:package>`;
       const range = context.document.body.insertOoxml(ooxml, Word.InsertLocation.end);
-      const control = range.insertContentControl();
-      control.title = templateIdentifier;
-      control.cannotEdit = true;
+      const contentControl = range.insertContentControl();
+      contentControl.title = templateIdentifier;
+      contentControl.cannotEdit = true;
       await context.sync();
       setOverallCounter({
         ...overallCounter,

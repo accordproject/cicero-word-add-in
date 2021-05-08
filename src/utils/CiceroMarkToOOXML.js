@@ -1,4 +1,5 @@
 import sanitizeHtmlChars from './SanitizeHtmlChars';
+import sanitizeStringValues from './SanitizeStringValues';
 import titleGenerator from './TitleGenerator';
 
 let globalOoxml;
@@ -108,7 +109,7 @@ const insertVariable = (title, tag, value, type) => {
             <w:sz w:val="24"/>
             <w:highlight w:val="green"/>
           </w:rPr>
-          <w:t xml:space="preserve">${sanitizeHtmlChars(value)}</w:t>
+          <w:t xml:space="preserve">${sanitizeStringValues(sanitizeHtmlChars(value))}</w:t>
         </w:r>
       </w:sdtContent>
     </w:sdt>
