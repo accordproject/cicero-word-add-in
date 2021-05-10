@@ -1,8 +1,5 @@
 # Cicero Word Add-in Development Guide
 
-## ❗ Accord Project Development Guide ❗
-We'd love for you to help develop improvements to Cicero Word Add-in! Please refer to the [Accord Project Development guidelines][apdev] we'd like you to follow.
-
 ## Cicero Word Add-in Specific Information
 
 ### Development Setup
@@ -70,6 +67,9 @@ We'd love for you to help develop improvements to Cicero Word Add-in! Please ref
          debug the add-in the same way you would debug a web app. (ie. use the
          `Console` tab to view printed logs and errors, the `Element` tab to
          inspect the HTML and CSS, the `Network` tab for network calls, etc).
+
+## ❗ Accord Project Development Guide ❗
+We'd love for you to help develop improvements to Cicero Word Add-in! Please refer to the [Accord Project Development guidelines][apdev] we'd like you to follow.
 
 [apdev]: https://github.com/accordproject/techdocs/blob/master/DEVELOPERS.md
 [addindocs]: https://docs.microsoft.com/en-us/office/dev/add-ins/quickstarts/word-quickstart
