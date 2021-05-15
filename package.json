@@ -17,7 +17,7 @@
     "build-dev": "webpack --mode development --https false && echo . && echo . && echo . && echo Please use 'build:dev' instead of 'build-dev'.",
     "dev-server": "webpack-dev-server --mode development",
     "lint": "eslint src/**/*.{js,jsx}",
-    "lint:fix": "eslint src/**/*.{js,jsx} --fix",
+    "lint:fix": "eslint 'src/**/*.{js,jsx}' --fix",
     "prepare": "husky install",
     "setup": "npm i && npm run prepare",
     "start": "office-addin-debugging start manifest.xml",

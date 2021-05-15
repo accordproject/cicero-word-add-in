@@ -5,6 +5,7 @@ import { SemanticToastContainer } from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 
 import TemplateLibrary from './TemplateLibrary';
+import Document from './Document';
 import './App.css';
 
 /**
@@ -16,6 +17,9 @@ import './App.css';
 const App = ({ isOfficeInitialized }) => {
   const [activeNav, setActiveNav] = useState('library');
   const [openOnStartup, setOpenOnStartup] = useState(false);
+  const [deletionTemplate, setDeletionTemplate] = useState('');
+
+  const [insertedTemplates, setInsertedTemplates] = useState([]);
 
   useEffect(() => {
     if (isOfficeInitialized) {
@@ -47,8 +51,8 @@ const App = ({ isOfficeInitialized }) => {
   };
 
   const navItems = [
-    { name: 'document', content: 'Document', component: <p>Document component goes here.</p> },
-    { name: 'library', content: 'Library', component: <TemplateLibrary /> },
+    { name: 'document', content: 'Document', component: <Document insertedTemplates={insertedTemplates} setDeletionTemplate={setDeletionTemplate} deletionTemplate={deletionTemplate} setActiveNav={setActiveNav}/> },
+    { name: 'library', content: 'Library', component: <TemplateLibrary insertedTemplates={insertedTemplates} setInsertedTemplates={setInsertedTemplates} deletionTemplate={deletionTemplate} setDeletionTemplate={setDeletionTemplate}/> },
   ];
 
   if (!isOfficeInitialized) {

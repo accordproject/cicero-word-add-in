@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Loader } from 'semantic-ui-react';
 import { toast } from 'react-semantic-toasts';
 
@@ -18,11 +19,15 @@ const XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>';
 /**
  * Template library Renderer.
  *
+ * @param {object} props Properties of the React
  * @returns {React.FC} Template library
  */
-const LibraryComponent = () => {
+const LibraryComponent = props => {
   const [templates, setTemplates] = useState(null);
   const [overallCounter, setOverallCounter] = useState({});
+  // const [insTemplates, setInsTemplates] = useState([]);
+
+  const { insertedTemplates, setInsertedTemplates, deletionTemplate, setDeletionTemplate } = props;
 
   useEffect(() => {
     /**
@@ -38,6 +43,76 @@ const LibraryComponent = () => {
     }
     load();
   }, []);
+
+  useEffect(()=>{
+    if (deletionTemplate) {
+      let temp = [...insertedTemplates];
+      temp = temp.filter(template=> template.identifier!==deletionTemplate);
+      setInsertedTemplates(temp);
+      // setInsTemplates(temp);
+      setDeletionTemplate('');
+      deleteTemplate(deletionTemplate);
+    }
+  }, [deletionTemplate]);
+
+  /**
+   * Deletes a template from the document.
+   *
+   * @param {string} templateIdentifier Identifier for the template to be deleted
+   */
+  const deleteTemplate = async templateIdentifier => {
+    console.log('template Identifier is', templateIdentifier);
+    Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, result => {
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        const customXmlPart = result.value[0];
+        customXmlPart.getNodesAsync('*/*', result => {
+          if (result.status === Office.AsyncResultStatus.Succeeded) {
+            let newXml = XML_HEADER + `<templates xmlns="${CUSTOM_XML_NAMESPACE}">`;
+            for (let node=0; node < result.value.length; ++node) {
+              if (result.value[node].namespaceUri !== templateIdentifier) {
+                newXml += `<template xmlns="${result.value[node].namespaceUri}" />`;
+              }
+            }
+            console.log('NEW DELTED XML are', newXml);
+            Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, res => {
+              if (res.status === Office.AsyncResultStatus.Succeeded) {
+                for (let index=0; index<res.value.length; ++index) {
+                  res.value[index].deleteAsync();
+                }
+                Office.context.document.customXmlParts.addAsync(newXml);
+              }
+            });
+            console.log('XML removed');
+          }
+        });
+      }
+    });
+
+    // Word.run(async context => {
+    //   const contentControls = context.document.body.contentControls;
+    //   contentControls.load(['items/length', 'title']);
+    //   await context.sync();
+    //   let deletionIndex=-1;
+    //   const contentControlsLength = contentControls.items.length;
+    //   for (let index=0; index<contentControlsLength; ++index) {
+    //     if (contentControls.items[index].title === templateIdentifier) {
+    //       deletionIndex = index;
+    //       break;
+    //     }
+    //   }
+    //   return context.sync().then(()=>{
+    //     if (contentControls.items.length=== contentControls-1) {
+    //       console.log('DELETED THE CONTENT CONTROL');
+    //     } else {
+    //       contentControls.items[deletionIndex].cannotDelete=false;
+    //       contentControls.items[deletionIndex].delete(false);
+    //       return context.sync().then(function () {
+    //         console.log('Deleted the desired content control');
+    //       });
+    //     }
+    //   });
+    // });
+  };
 
   /**
    * Renders an uploaded template.
@@ -108,17 +183,6 @@ const LibraryComponent = () => {
       let counter = { ...overallCounter };
       let ooxml = ooxmlGenerator(ciceroMark, counter, '');
       const templateIdentifier = template.getIdentifier();
-      ooxml = `
-        <w:sdt>
-          <w:sdtPr>
-            <w:lock w:val="contentLocked" />
-            <w:alias w:val="${templateIdentifier}"/>
-          </w:sdtPr>
-          <w:sdtContent>
-          ${ooxml}
-          </w:sdtContent>
-        </w:sdt>
-      `;
       ooxml = `<pkg:package xmlns:pkg="http://schemas.microsoft.com/office/2006/xmlPackage">
       <pkg:part pkg:name="/_rels/.rels" pkg:contentType="application/vnd.openxmlformats-package.relationships+xml">
         <pkg:xmlData>
@@ -137,7 +201,11 @@ const LibraryComponent = () => {
       </pkg:part>
       ${spec}
       </pkg:package>`;
-      context.document.body.insertOoxml(ooxml, Word.InsertLocation.end);
+      const range = context.document.body.insertOoxml(ooxml, Word.InsertLocation.end);
+      const contentControl = range.insertContentControl();
+      contentControl.title = templateIdentifier;
+      contentControl.cannotEdit = true;
+      contentControl.cannotDelete = true;
       await context.sync();
       setOverallCounter({
         ...overallCounter,
@@ -178,6 +246,9 @@ const LibraryComponent = () => {
     const template = await Template.fromUrl(templateIndex.ciceroUrl);
     const ciceroMark = templateToCiceroMark(template);
     const templateIdentifier = template.getIdentifier();
+    // if (insTemplates.filter(temp=>temp.identifier===templateIdentifier).length>0) {
+    //   deleteTemplate(templateIdentifier);
+    // }
     saveTemplateToXml(ciceroMark, template, templateIdentifier);
   };
 
@@ -197,7 +268,12 @@ const LibraryComponent = () => {
           `<templates xmlns="${CUSTOM_XML_NAMESPACE}">` +
             `<template xmlns="${templateIdentifier}" />` +
           '</templates>';
+          console.log('XML is', xml);
           Office.context.document.customXmlParts.addAsync(xml);
+          // let currentTemplates = [...insertedTemplates];
+          // currentTemplates.push({ identifier: templateIdentifier, name: template.metadata.packageJson.name });
+          // setInsertedTemplates(currentTemplates);
+          // setInsTemplates(currentTemplates);
         }
         else {
           const customXmlPart = result.value[0];
@@ -207,6 +283,7 @@ const LibraryComponent = () => {
               let newXml = XML_HEADER + `<templates xmlns="${CUSTOM_XML_NAMESPACE}">`;
               if (result.value.length > 0) {
                 for (let node=0; node < result.value.length; ++node) {
+                  console.log(`At index ${node}, value is`, result.value[node]);
                   if (result.value[node].namespaceUri !== templateIdentifier) {
                     newXml += `<template xmlns="${result.value[node].namespaceUri}" />`;
                   }
@@ -215,7 +292,7 @@ const LibraryComponent = () => {
                   }
                 }
               }
-              if(!identifierExists){
+              if (!identifierExists) {
                 setup(ciceroMark, template);
                 newXml += `<template xmlns="${templateIdentifier}" />`;
                 newXml += '</templates>';
@@ -227,7 +304,21 @@ const LibraryComponent = () => {
                   }
                 });
                 Office.context.document.customXmlParts.addAsync(newXml);
-              }else{
+                // console.log('new XML is', newXml);
+                // let currentTemplates =[...insertedTemplates];
+                // currentTemplates.push({ identifier:templateIdentifier, name: templateIdentifier });
+                // setInsertedTemplates(currentTemplates);
+                // setInsTemplates(currentTemplates);
+              } else {
+                console.log('XML NOW', newXml);
+                Office.context.document.customXmlParts.getByNamespaceAsync(CUSTOM_XML_NAMESPACE, res => {
+                  if (res.status === Office.AsyncResultStatus.Succeeded) {
+                    for (let index=0; index<res.value.length; ++index) {
+                      res.value[index].deleteAsync();
+                    }
+                  }
+                });
+                Office.context.document.customXmlParts.addAsync(newXml);
                 toast(
                   {
                     title: 'Duplicate template',
@@ -268,6 +359,13 @@ const LibraryComponent = () => {
       onUploadItem={onUploadTemplate}
     />
   );
+};
+
+LibraryComponent.propTypes = {
+  insertedTemplates: PropTypes.array,
+  setInsertedTemplates: PropTypes.func,
+  deletionTemplate: PropTypes.string,
+  setDeletionTemplate: PropTypes.func,
 };
 
 export default LibraryComponent;

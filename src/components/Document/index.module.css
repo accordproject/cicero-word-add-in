@@ -1,0 +1,38 @@
+.fullWidth{
+    width:100%;
+}
+
+.templateCard{
+    margin: 0.5rem;
+    border: 1px solid #7B8084;
+    border-spacing: 0px;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    box-shadow: 0 1px 9px 0 rgba(0,0,0,0.1);
+}
+
+.cardBody{
+    padding: 0.5rem;
+    margin-bottom: 0rem;
+}
+
+.identifier{
+    font-size: 1rem;
+    padding:0.5rem;
+    margin-bottom: 0rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: rgba(0,0,0,0.4);
+}
+.cardAction{
+    background:  #F9F9F9;
+    text-align: center;
+    padding:0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.cardAction span:hover{
+    color: #3087CB    
+}
+
