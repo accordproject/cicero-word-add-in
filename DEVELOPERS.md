@@ -43,7 +43,7 @@
 6. For more information on setting up Word add-in for development, follow this
    [documentation][addindocs].
 
-#### Debugging Add-in
+#### Debugging Add-in: Method 1
 
 1. **Web version:** Open the browser's developer tools and see the console's
    output.
@@ -68,17 +68,16 @@
          `Console` tab to view printed logs and errors, the `Element` tab to
          inspect the HTML and CSS, the `Network` tab for network calls, etc).
 
-#### Debugging Add-in: Alternate way
+#### Debugging Add-in: Method 2
 If the above method to debug the add-in is not working, one can try the following steps:
    1. Delete the `C:\Users\{username}\.office-addin-dev-certs` folder.
    2. Run `npx office-addin-dev-certs install`.
-   3. Now run `npm run dev-server` to startup the server and `npm run start` 
-      to open the Add-in in Word.
+   3. Now, run `npm run start` to startup the server and sideload the add-in.
    4. Click on Add-in to open it.
    5. Instead of attaching the debugger from add-in, open VS Code and click on 
-      `Debug and run`. Click on the green arrow in top left corner that says
-      `Start Debugging`. The debugger is now running. Open the debug console. 
-      Happy debugging :).
+      `Run and Debug`(Shortcut key on Windows:Ctrl+Shift+D). Click on the green
+      arrow in top left corner that says `Start Debugging`. The debugger is now 
+      running. Open the debug console. Happy debugging :).
 
 ## ❗ Accord Project Development Guide ❗
 We'd love for you to help develop improvements to Cicero Word Add-in! Please refer to the [Accord Project Development guidelines][apdev] we'd like you to follow.
