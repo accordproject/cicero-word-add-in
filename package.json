@@ -28,7 +28,7 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "@accordproject/cicero-core": "^0.22.0",
+    "@accordproject/cicero-core": "^0.24.0",
     "@accordproject/markdown-cicero": "^0.13.0",
     "@accordproject/markdown-docx": "^0.13.0",
     "@accordproject/ui-components": "^0.97.0",
