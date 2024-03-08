@@ -2,11 +2,11 @@
 
 ## Cicero Word Add-in Specific Information
 
-The main channel for support with Cicero Word Add-in is the [Gsoc-word Slack Channel][apaddinslack] on the [Accord Project slack][apslack].
+The main channel for support with Cicero Word Add-in is the [technology-cicero Discord Channel][apaddindiscord] on the [Accord Project Discord][apdiscord].
 
 [apcontribute]: https://github.com/accordproject/techdocs/blob/master/CONTRIBUTING.md
-[apslack]: https://accord-project-slack-signup.herokuapp.com
-[apaddinslack]: https://accord-project.slack.com/archives/C013P8W7RB3
+[apdiscord]: https://discord.gg/Zm99SKhhtA
+[apaddindiscord]: https://discord.com/channels/874841541787656263/874874375650832384
 
 ## ❗ Accord Project Contribution Guide ❗
 
